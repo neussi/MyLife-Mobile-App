@@ -208,13 +208,13 @@
             </div>
             <p class="text-[1.625rem] font-bold leading-none {% if balance >= 0 %}text-emerald-600{% else %}text-red-500{% endif %}"
                 style="font-family:'Sora',system-ui,sans-serif;">
-                {{ balance|floatformat:0 }} €
+                {{ balance|floatformat:0 }} FCFA
             </p>
             <p class="text-xs text-neutral-400 mt-1.5">Solde mensuel</p>
             <div class="mt-4 flex items-center gap-3 text-[11px] font-semibold">
-                <span class="text-emerald-500">+{{ income_month|floatformat:0 }} €</span>
+                <span class="text-emerald-500">+{{ income_month|floatformat:0 }} FCFA</span>
                 <span class="text-neutral-200 dark:text-neutral-700">|</span>
-                <span class="text-red-400">-{{ expense_month|floatformat:0 }} €</span>
+                <span class="text-red-400">-{{ expense_month|floatformat:0 }} FCFA</span>
             </div>
         </div>
 
@@ -373,7 +373,7 @@
                         </div>
                         <span
                             class="text-xs font-bold flex-shrink-0 ml-2 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}">
-                            {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} €
+                            {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} FCFA
                         </span>
                     </div>
                     {% empty %}

@@ -18,17 +18,33 @@
         position: relative;
         overflow: hidden;
     }
-    .dark .kpi-card { background: #1c1c1c; border-color: #2d2d2d; }
+
+    .dark .kpi-card {
+        background: #1c1c1c;
+        border-color: #2d2d2d;
+    }
+
     .kpi-card::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0;
+        top: 0;
+        left: 0;
+        right: 0;
         height: 3px;
         border-radius: 1rem 1rem 0 0;
     }
-    .kpi-income::before  { background: linear-gradient(90deg, #10b981, #34d399); }
-    .kpi-expense::before { background: linear-gradient(90deg, #f87171, #ef4444); }
-    .kpi-balance::before { background: linear-gradient(90deg, #38bdf8, #0284c7); }
+
+    .kpi-income::before {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .kpi-expense::before {
+        background: linear-gradient(90deg, #f87171, #ef4444);
+    }
+
+    .kpi-balance::before {
+        background: linear-gradient(90deg, #38bdf8, #0284c7);
+    }
 
     .stat-ring {
         position: relative;
@@ -59,9 +75,21 @@
         background-position: right 0.75rem center;
         padding-right: 2.25rem;
     }
-    .filter-pill:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgb(2 132 199 / 0.12); }
-    .dark .filter-pill { background-color: #1c1c1c; border-color: #2d2d2d; color: #d4d4d4; }
-    .dark .filter-pill:focus { border-color: #0ea5e9; }
+
+    .filter-pill:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgb(2 132 199 / 0.12);
+    }
+
+    .dark .filter-pill {
+        background-color: #1c1c1c;
+        border-color: #2d2d2d;
+        color: #d4d4d4;
+    }
+
+    .dark .filter-pill:focus {
+        border-color: #0ea5e9;
+    }
 
     /* Chart container glass */
     .chart-glass {
@@ -71,7 +99,11 @@
         overflow: hidden;
         box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
     }
-    .dark .chart-glass { background: #1c1c1c; border-color: #2d2d2d; }
+
+    .dark .chart-glass {
+        background: #1c1c1c;
+        border-color: #2d2d2d;
+    }
 
     .chart-header {
         display: flex;
@@ -80,7 +112,10 @@
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid #eeeeee;
     }
-    .dark .chart-header { border-color: #2d2d2d; }
+
+    .dark .chart-header {
+        border-color: #2d2d2d;
+    }
 
     .legend-dot {
         display: inline-flex;
@@ -92,6 +127,7 @@
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
+
     .legend-dot::before {
         content: '';
         display: block;
@@ -99,9 +135,18 @@
         height: 8px;
         border-radius: 50%;
     }
-    .legend-income::before  { background: #10b981; }
-    .legend-expense::before { background: #f87171; }
-    .legend-sky::before     { background: #0ea5e9; }
+
+    .legend-income::before {
+        background: #10b981;
+    }
+
+    .legend-expense::before {
+        background: #f87171;
+    }
+
+    .legend-sky::before {
+        background: #0ea5e9;
+    }
 </style>
 {% endblock %}
 
@@ -110,27 +155,32 @@
 
     <!-- ── Filtres ───────────────────────────────────────────── -->
     <form method="get" class="flex flex-wrap items-center gap-3">
-        <div class="flex items-center gap-2 bg-white dark:bg-neutral-800 border border-neutral-150 dark:border-neutral-700 rounded-xl px-1 py-1">
-            <select name="month" class="filter-pill border-0 shadow-none focus:ring-0 focus:border-0 focus:shadow-none bg-transparent dark:bg-transparent py-1.5 pr-7 pl-3" onchange="this.form.submit()">
-                <option value="1"  {% if month == 1  %}selected{% endif %}>Janvier</option>
-                <option value="2"  {% if month == 2  %}selected{% endif %}>Février</option>
-                <option value="3"  {% if month == 3  %}selected{% endif %}>Mars</option>
-                <option value="4"  {% if month == 4  %}selected{% endif %}>Avril</option>
-                <option value="5"  {% if month == 5  %}selected{% endif %}>Mai</option>
-                <option value="6"  {% if month == 6  %}selected{% endif %}>Juin</option>
-                <option value="7"  {% if month == 7  %}selected{% endif %}>Juillet</option>
-                <option value="8"  {% if month == 8  %}selected{% endif %}>Août</option>
-                <option value="9"  {% if month == 9  %}selected{% endif %}>Septembre</option>
-                <option value="10" {% if month == 10 %}selected{% endif %}>Octobre</option>
-                <option value="11" {% if month == 11 %}selected{% endif %}>Novembre</option>
-                <option value="12" {% if month == 12 %}selected{% endif %}>Décembre</option>
+        <div
+            class="flex items-center gap-2 bg-white dark:bg-neutral-800 border border-neutral-150 dark:border-neutral-700 rounded-xl px-1 py-1">
+            <select name="month"
+                class="filter-pill border-0 shadow-none focus:ring-0 focus:border-0 focus:shadow-none bg-transparent dark:bg-transparent py-1.5 pr-7 pl-3"
+                onchange="this.form.submit()">
+                <option value="1" {% if month==1 %}selected{% endif %}>Janvier</option>
+                <option value="2" {% if month==2 %}selected{% endif %}>Février</option>
+                <option value="3" {% if month==3 %}selected{% endif %}>Mars</option>
+                <option value="4" {% if month==4 %}selected{% endif %}>Avril</option>
+                <option value="5" {% if month==5 %}selected{% endif %}>Mai</option>
+                <option value="6" {% if month==6 %}selected{% endif %}>Juin</option>
+                <option value="7" {% if month==7 %}selected{% endif %}>Juillet</option>
+                <option value="8" {% if month==8 %}selected{% endif %}>Août</option>
+                <option value="9" {% if month==9 %}selected{% endif %}>Septembre</option>
+                <option value="10" {% if month==10 %}selected{% endif %}>Octobre</option>
+                <option value="11" {% if month==11 %}selected{% endif %}>Novembre</option>
+                <option value="12" {% if month==12 %}selected{% endif %}>Décembre</option>
             </select>
             <div class="w-px h-5 bg-neutral-150 dark:bg-neutral-700"></div>
-            <select name="year" class="filter-pill border-0 shadow-none focus:ring-0 focus:border-0 focus:shadow-none bg-transparent dark:bg-transparent py-1.5 pr-7 pl-3" onchange="this.form.submit()">
-                <option value="2023" {% if year == 2023 %}selected{% endif %}>2023</option>
-                <option value="2024" {% if year == 2024 %}selected{% endif %}>2024</option>
-                <option value="2025" {% if year == 2025 %}selected{% endif %}>2025</option>
-                <option value="2026" {% if year == 2026 %}selected{% endif %}>2026</option>
+            <select name="year"
+                class="filter-pill border-0 shadow-none focus:ring-0 focus:border-0 focus:shadow-none bg-transparent dark:bg-transparent py-1.5 pr-7 pl-3"
+                onchange="this.form.submit()">
+                <option value="2023" {% if year==2023 %}selected{% endif %}>2023</option>
+                <option value="2024" {% if year==2024 %}selected{% endif %}>2024</option>
+                <option value="2025" {% if year==2025 %}selected{% endif %}>2025</option>
+                <option value="2026" {% if year==2026 %}selected{% endif %}>2026</option>
             </select>
         </div>
 
@@ -147,8 +197,9 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="label">Revenus</p>
-                    <p class="text-[1.875rem] font-bold text-emerald-600 leading-none mt-2" style="font-family:'Sora',system-ui,sans-serif;">
-                        {{ income|floatformat:2 }} <span class="text-lg text-emerald-400">€</span>
+                    <p class="text-[1.875rem] font-bold text-emerald-600 leading-none mt-2"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        {{ income|floatformat:2 }} <span class="text-lg text-emerald-400">FCFA</span>
                     </p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
@@ -165,8 +216,9 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="label">Dépenses</p>
-                    <p class="text-[1.875rem] font-bold text-red-500 leading-none mt-2" style="font-family:'Sora',system-ui,sans-serif;">
-                        {{ expense|floatformat:2 }} <span class="text-lg text-red-300">€</span>
+                    <p class="text-[1.875rem] font-bold text-red-500 leading-none mt-2"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        {{ expense|floatformat:2 }} <span class="text-lg text-red-300">FCFA</span>
                     </p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
@@ -183,8 +235,10 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="label">Solde net</p>
-                    <p class="text-[1.875rem] font-bold leading-none mt-2 {% if balance >= 0 %}text-sky-600{% else %}text-red-500{% endif %}" style="font-family:'Sora',system-ui,sans-serif;">
-                        {% if balance >= 0 %}+{% endif %}{{ balance|floatformat:2 }} <span class="text-lg opacity-60">€</span>
+                    <p class="text-[1.875rem] font-bold leading-none mt-2 {% if balance >= 0 %}text-sky-600{% else %}text-red-500{% endif %}"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        {% if balance >= 0 %}+{% endif %}{{ balance|floatformat:2 }} <span
+                            class="text-lg opacity-60">FCFA</span>
                     </p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
@@ -196,7 +250,7 @@
                 {% if income > 0 %}
                 <div class="h-1.5 bg-red-100 dark:bg-red-900/20 rounded-full overflow-hidden">
                     <div class="h-full bg-emerald-400 rounded-full transition-all"
-                         style="width: {% widthratio income income|add:expense 100 %}%"></div>
+                        style="width: {% widthratio income income|add:expense 100 %}%"></div>
                 </div>
                 <div class="flex justify-between text-[10px] text-neutral-400 mt-1 font-medium">
                     <span>Revenus</span><span>Dépenses</span>
@@ -213,7 +267,8 @@
         <!-- Donut catégories -->
         <div class="lg:col-span-2 chart-glass">
             <div class="chart-header">
-                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
+                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white"
+                    style="font-family:'Sora',system-ui,sans-serif;">
                     Par catégorie
                 </h2>
                 <span class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-400 text-[10px]">Dépenses</span>
@@ -227,8 +282,9 @@
                     <!-- Centre label -->
                     <div class="absolute text-center pointer-events-none">
                         <p class="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider">Total</p>
-                        <p class="text-lg font-bold text-neutral-900 dark:text-white mt-0.5" style="font-family:'Sora',system-ui,sans-serif;">
-                            {{ expense|floatformat:0 }} €
+                        <p class="text-lg font-bold text-neutral-900 dark:text-white mt-0.5"
+                            style="font-family:'Sora',system-ui,sans-serif;">
+                            {{ expense|floatformat:0 }} FCFA
                         </p>
                     </div>
                 </div>
@@ -239,7 +295,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5 min-w-0">
                             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                                  style="background-color: {{ item.category__color|default:'#0ea5e9' }}"></span>
+                                style="background-color: {{ item.category__color|default:'#0ea5e9' }}"></span>
                             <span class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                                 {{ item.category__name|default:"Sans catégorie" }}
                             </span>
@@ -247,7 +303,8 @@
                         <div class="flex items-center gap-2 flex-shrink-0 ml-2">
                             <div class="w-16 h-1 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden">
                                 <div class="h-full rounded-full"
-                                     style="width: {% widthratio item.total expense 100 %}%; background-color: {{ item.category__color|default:'#0ea5e9' }}"></div>
+                                    style="width: {% widthratio item.total expense 100 %}%; background-color: {{ item.category__color|default:'#0ea5e9' }}">
+                                </div>
                             </div>
                             <span class="text-xs font-semibold text-neutral-700 dark:text-neutral-300 w-14 text-right">
                                 {{ item.total|floatformat:2 }} €
@@ -271,7 +328,8 @@
         <div class="lg:col-span-3 chart-glass">
             <div class="chart-header">
                 <div>
-                    <h2 class="text-sm font-semibold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
+                    <h2 class="text-sm font-semibold text-neutral-900 dark:text-white"
+                        style="font-family:'Sora',system-ui,sans-serif;">
                         Tendances {{ year }}
                     </h2>
                     <p class="text-[11px] text-neutral-400 mt-0.5">Vue mensuelle revenus / dépenses</p>
@@ -294,7 +352,8 @@
     <div class="chart-glass">
         <div class="chart-header">
             <div>
-                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
+                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white"
+                    style="font-family:'Sora',system-ui,sans-serif;">
                     Évolution du solde
                 </h2>
                 <p class="text-[11px] text-neutral-400 mt-0.5">Cumul mensuel sur {{ year }}</p>
@@ -311,11 +370,12 @@
     <!-- ── Table transactions ─────────────────────────────────── -->
     <div class="chart-glass">
         <div class="chart-header">
-            <h2 class="text-sm font-semibold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
+            <h2 class="text-sm font-semibold text-neutral-900 dark:text-white"
+                style="font-family:'Sora',system-ui,sans-serif;">
                 Transactions récentes
             </h2>
             <a href="{% url 'transaction_create' %}"
-               class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
                 + Ajouter
             </a>
         </div>
@@ -341,16 +401,18 @@
                                             {% if tx.type == 'INCOME' %}bg-emerald-50 dark:bg-emerald-900/20
                                             {% else %}bg-red-50 dark:bg-red-900/20{% endif %}">
                                     <i data-lucide="{% if tx.type == 'INCOME' %}arrow-up-right{% else %}arrow-down-left{% endif %}"
-                                       class="w-3.5 h-3.5 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
+                                        class="w-3.5 h-3.5 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
                                 </div>
-                                <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate max-w-[200px]">
+                                <span
+                                    class="text-sm font-medium text-neutral-800 dark:text-neutral-200 truncate max-w-[200px]">
                                     {{ tx.description|default:"—" }}
                                 </span>
                             </div>
                         </td>
                         <td class="td">
                             {% if tx.category %}
-                            <span class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">
+                            <span
+                                class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400">
                                 {{ tx.category.name }}
                             </span>
                             {% else %}
@@ -358,20 +420,21 @@
                             {% endif %}
                         </td>
                         <td class="td text-right">
-                            <span class="text-sm font-bold {% if tx.type == 'INCOME' %}text-emerald-600{% else %}text-red-500{% endif %}">
+                            <span
+                                class="text-sm font-bold {% if tx.type == 'INCOME' %}text-emerald-600{% else %}text-red-500{% endif %}">
                                 {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} €
                             </span>
                         </td>
                         <td class="td text-right">
                             <div class="flex items-center justify-end gap-1">
                                 <a href="{% url 'transaction_edit' tx.id %}"
-                                   class="icon-btn w-7 h-7 text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20">
+                                    class="icon-btn w-7 h-7 text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </a>
                                 <form method="post" action="{% url 'transaction_delete' tx.id %}" class="inline">
                                     {% csrf_token %}
                                     <button type="submit" onclick="return confirm('Supprimer cette transaction ?')"
-                                            class="icon-btn w-7 h-7 text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+                                        class="icon-btn w-7 h-7 text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
                                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </form>
@@ -382,11 +445,14 @@
                     <tr>
                         <td colspan="5" class="td py-14 text-center">
                             <div class="flex flex-col items-center gap-2">
-                                <div class="w-10 h-10 rounded-xl bg-neutral-50 dark:bg-neutral-700 flex items-center justify-center">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-neutral-50 dark:bg-neutral-700 flex items-center justify-center">
                                     <i data-lucide="receipt" class="w-4 h-4 text-neutral-300"></i>
                                 </div>
                                 <p class="text-sm text-neutral-400">Aucune transaction.
-                                    <a href="{% url 'transaction_create' %}" class="text-sky-500 font-semibold hover:text-sky-600 transition-colors">Ajouter la première</a>
+                                    <a href="{% url 'transaction_create' %}"
+                                        class="text-sky-500 font-semibold hover:text-sky-600 transition-colors">Ajouter
+                                        la première</a>
                                 </p>
                             </div>
                         </td>
@@ -404,9 +470,9 @@
 <script>
     // ── Theme detection ──────────────────────────────────────────────
     const isDark = document.documentElement.classList.contains('dark');
-    const gridColor  = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-    const tickColor  = isDark ? '#525252' : '#a3a3a3';
-    const tooltipBg  = isDark ? '#1c1c1c' : '#ffffff';
+    const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    const tickColor = isDark ? '#525252' : '#a3a3a3';
+    const tooltipBg = isDark ? '#1c1c1c' : '#ffffff';
     const tooltipBdr = isDark ? '#2d2d2d' : '#eeeeee';
     const tooltipTxt = isDark ? '#d4d4d4' : '#404040';
 
@@ -431,61 +497,61 @@
 
     // ── Category Donut ───────────────────────────────────────────────
     {% if expense_by_cat %}
-    (function() {
-        const labels = [{% for item in expense_by_cat %}"{{ item.category__name|default:'Autre' }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-        const values = [{% for item in expense_by_cat %}{{ item.total|floatformat:2 }}{% if not forloop.last %},{% endif %}{% endfor %}];
-        const colors = [{% for item in expense_by_cat %}"{{ item.category__color|default:'#0ea5e9' }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+    (function () {
+        const labels = [{% for item in expense_by_cat %}"{{ item.category__name|default:'Autre' }}"{% if not forloop.last %}, {% endif %} {% endfor %}];
+    const values = [{% for item in expense_by_cat %}{ { item.total | floatformat: 2 } } {% if not forloop.last %}, {% endif %} {% endfor %}];
+    const colors = [{% for item in expense_by_cat %}"{{ item.category__color|default:'#0ea5e9' }}"{% if not forloop.last %}, {% endif %} {% endfor %}];
 
-        const ctx = document.getElementById('categoryChart');
-        if (!ctx) return;
+    const ctx = document.getElementById('categoryChart');
+    if (!ctx) return;
 
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
-                    borderWidth: 3,
-                    borderColor: isDark ? '#1c1c1c' : '#ffffff',
-                    hoverOffset: 8,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '78%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        ...sharedTooltip,
-                        callbacks: {
-                            label: ctx => '  ' + ctx.parsed.toFixed(2) + ' €'
-                        }
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 3,
+                borderColor: isDark ? '#1c1c1c' : '#ffffff',
+                hoverOffset: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '78%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    ...sharedTooltip,
+                    callbacks: {
+                        label: ctx => '  ' + ctx.parsed.toFixed(2) + ' €'
                     }
-                },
-                animation: {
-                    animateRotate: true,
-                    animateScale: false,
-                    duration: 700,
-                    easing: 'easeOutQuart',
                 }
+            },
+            animation: {
+                animateRotate: true,
+                animateScale: false,
+                duration: 700,
+                easing: 'easeOutQuart',
             }
-        });
-    })();
+        }
+    });
+    }) ();
     {% endif %}
 
     // ── Trend Bar Chart ──────────────────────────────────────────────
-    (function() {
+    (function () {
         const ctx = document.getElementById('trendChart');
         if (!ctx) return;
 
-        const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
 
         fetch('/finance/api/chart/?year={{ year }}')
             .then(r => r.json())
             .then(data => {
-                const incomes  = data.monthly.map(d => d.income);
+                const incomes = data.monthly.map(d => d.income);
                 const expenses = data.monthly.map(d => d.expense);
 
                 new Chart(ctx, {
@@ -556,11 +622,11 @@
     })();
 
     // ── Cumulative Balance Line Chart ────────────────────────────────
-    (function() {
+    (function () {
         const ctx = document.getElementById('balanceChart');
         if (!ctx) return;
 
-        const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
 
         fetch('/finance/api/chart/?year={{ year }}')
             .then(r => r.json())
@@ -630,7 +696,7 @@
                     }
                 });
             })
-            .catch(() => {});
+            .catch(() => { });
     })();
 </script>
 {% endblock %}

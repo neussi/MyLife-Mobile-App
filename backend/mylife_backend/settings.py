@@ -146,6 +146,12 @@ if not DEBUG:
         },
     }
 
+# Localization and Units
+USE_THOUSAND_SEPARATOR = True
+DECIMAL_SEPARATOR = ','
+NUMBER_GROUPING = 3
+CURRENCY_CODE = 'FCFA'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

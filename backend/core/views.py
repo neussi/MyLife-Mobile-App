@@ -49,22 +49,29 @@ def dashboard(request):
     # Recent transactions
     recent_transactions = Transaction.objects.filter(user=request.user).order_by('-date', '-created_at')[:5]
 
-    return render(request, 'dashboard/index.html', {
-        'today': today,
-        'tasks_today': tasks_today,
-        'tasks_pending': tasks_pending,
-        'tasks_completed_today': tasks_completed_today,
-        'events_today': events_today,
-        'upcoming_events': upcoming_events,
-        'income_month': income_month,
-        'expense_month': expense_month,
-        'balance': balance,
-        'recent_notes': recent_notes,
-        'active_projects': active_projects,
-        'recent_transactions': recent_transactions,
-        'habit_logs_today': habit_logs_today,
-        'habits_completed_today': habits_completed_today,
-    })
+    try:
+        return render(request, 'dashboard/index.html', {
+            'today': today,
+            'tasks_today': tasks_today,
+            'tasks_pending': tasks_pending,
+            'tasks_completed_today': tasks_completed_today,
+            'events_today': events_today,
+            'upcoming_events': upcoming_events,
+            'income_month': income_month,
+            'expense_month': expense_month,
+            'balance': balance,
+            'recent_notes': recent_notes,
+            'active_projects': active_projects,
+            'recent_transactions': recent_transactions,
+            'habit_logs_today': habit_logs_today,
+            'habits_completed_today': habits_completed_today,
+            'actions_list': range(6), # Dummy to satisfy {% with %} if needed
+        })
+    except Exception as e:
+        # Log error in production or handle gracefully
+        if settings.DEBUG:
+            raise e
+        return render(request, '500.html', {'error_detail': str(e)}, status=500)
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
