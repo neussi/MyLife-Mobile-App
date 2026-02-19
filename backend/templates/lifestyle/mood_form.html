@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Journal d'humeur | MyLife{% endblock %}
+{% block page_title %}Comment vous sentez-vous ?{% endblock %}
+{% block page_subtitle %}Prenez un moment pour faire le point sur votre état d'esprit.{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto" x-data="{ score: 3 }">
+    <div class="card overflow-hidden">
+        <div class="h-1.5 w-full bg-gradient-to-r from-red-400 via-amber-400 to-emerald-400"></div>
+
+        <form method="post" class="p-8 space-y-8">
+            {% csrf_token %}
+            <input type="hidden" name="score" :value="score">
+
+            <!-- Premium Mood Selector -->
+            <div class="space-y-4">
+                <label class="label text-center">Sélectionnez votre humeur</label>
+                <div
+                    class="flex justify-between items-center bg-neutral-50 dark:bg-neutral-800/50 p-6 rounded-3xl border border-neutral-100 dark:border-neutral-700">
+
+                    <!-- 1: Très mal -->
+                    <button type="button" @click="score = 1"
+                        class="flex flex-col items-center gap-2 transition-all duration-300"
+                        :class="score == 1 ? 'scale-125' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'">
+                        <span class="text-3xl">😫</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter"
+                            :class="score == 1 ? 'text-red-500' : 'text-neutral-400'">Crisé</span>
+                    </button>
+
+                    <!-- 2: Pas bien -->
+                    <button type="button" @click="score = 2"
+                        class="flex flex-col items-center gap-2 transition-all duration-300"
+                        :class="score == 2 ? 'scale-125' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'">
+                        <span class="text-3xl">😟</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter"
+                            :class="score == 2 ? 'text-orange-500' : 'text-neutral-400'">Triste</span>
+                    </button>
+
+                    <!-- 3: Neutre -->
+                    <button type="button" @click="score = 3"
+                        class="flex flex-col items-center gap-2 transition-all duration-300"
+                        :class="score == 3 ? 'scale-125' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'">
+                        <span class="text-3xl">😐</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter"
+                            :class="score == 3 ? 'text-amber-500' : 'text-neutral-400'">Normal</span>
+                    </button>
+
+                    <!-- 4: Bien -->
+                    <button type="button" @click="score = 4"
+                        class="flex flex-col items-center gap-2 transition-all duration-300"
+                        :class="score == 4 ? 'scale-125' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'">
+                        <span class="text-3xl">🙂</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter"
+                            :class="score == 4 ? 'text-lime-500' : 'text-neutral-400'">Bien</span>
+                    </button>
+
+                    <!-- 5: Excellent -->
+                    <button type="button" @click="score = 5"
+                        class="flex flex-col items-center gap-2 transition-all duration-300"
+                        :class="score == 5 ? 'scale-125' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'">
+                        <span class="text-3xl">🤩</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter"
+                            :class="score == 5 ? 'text-emerald-500' : 'text-neutral-400'">Génial</span>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="space-y-2">
+                <label class="label">Gratitude ou pensée du jour</label>
+                {{ form.note }}
+                <p class="text-[10px] text-neutral-400 mt-1">L'écriture quotidienne favorise la clarté mentale.</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-4 flex items-center justify-end gap-3">
+                <a href="{% url 'lifestyle_dashboard' %}" class="btn btn-secondary">Plus tard</a>
+                <button type="submit" class="btn btn-primary px-10">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Motivational Quote -->
+    <div class="mt-8 text-center italic text-neutral-400 text-sm font-medium">
+        "Le bonheur n'est pas quelque chose de tout fait. Il découle de vos propres actions." — Dalai Lama
+    </div>
+</div>
+{% endblock %}

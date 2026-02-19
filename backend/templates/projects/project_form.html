@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Planifiez vos grands objectifs étape par étape.{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto" x-data="{ color: '{{ form.color.value|default:'#FF8C00' }}' }">
+    <!-- Header Card -->
+    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg text-white"
+        :style="{ backgroundColor: color }">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="rocket" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Identité du Projet</h2>
+                <p class="text-white/80 text-xs">Définissez la vision et le cadre de votre projet.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration indicator -->
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"
+            :style="{ backgroundColor: color }"></div>
+
+        <form method="post" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <div class="space-y-6">
+                <!-- Name -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="type" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                        Nom du projet
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.name.errors.0 }}
+                    </p>{% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="align-left" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                        Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.description.errors.0 }}</p>{% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Status -->
+                    <div class="space-y-1.5">
+                        <label class="label flex items-center gap-2">
+                            <i data-lucide="activity" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                            Statut
+                        </label>
+                        <div class="relative">
+                            {{ form.status }}
+                            <i data-lucide="chevron-down"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                        </div>
+                        {% if form.status.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                            form.status.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Color -->
+                    <div class="space-y-1.5">
+                        <label class="label flex items-center gap-2">
+                            <i data-lucide="palette" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                            Couleur thématique
+                        </label>
+                        <div class="relative">
+                            {{ form.color }}
+                            <i data-lucide="palette"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                        </div>
+                        {% if form.color.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                            form.color.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Start Date -->
+                    <div class="space-y-1.5">
+                        <label class="label flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                            Date de début
+                        </label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                            form.start_date.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="space-y-1.5">
+                        <label class="label flex items-center gap-2">
+                            <i data-lucide="hourglass" class="w-3.5 h-3.5" :style="{ color: color }"></i>
+                            Échéance prévue
+                        </label>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                            form.end_date.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-8 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'project_list' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn text-white px-8"
+                    :style="{ backgroundColor: color, borderColor: color }">
+                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Lancer le projet{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field,
+    input[type="text"].field,
+    input[type="date"].field {
+        width: 100%;
+        background-color: #f9fafb;
+        /* neutral-50 */
+        border: 1px solid #e5e7eb;
+        /* neutral-200 */
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        /* text-sm */
+        transition: all 0.2s;
+    }
+
+    .dark .field,
+    .dark select.field,
+    .dark textarea.field {
+        background-color: #171717;
+        /* neutral-900 */
+        border-color: #262626;
+        /* neutral-800 */
+        color: white;
+    }
+
+    .field:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+    }
+
+    input[type="color"].field {
+        height: 46px;
+        padding: 0.25rem;
+        cursor: pointer;
+    }
+
+    select {
+        appearance: none;
+    }
+</style>
+{% endblock %}

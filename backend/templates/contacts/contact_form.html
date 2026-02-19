@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Gérez vos relations professionnelles et personnelles avec soin.{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto" x-data="contactFormHandler()">
+    <!-- Header Card -->
+    <div
+        class="card mb-6 p-6 bg-gradient-to-br from-brand-600 to-brand-700 text-white border-none shadow-lg shadow-brand-500/20 overflow-hidden relative">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="user-plus" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Identité du Contact</h2>
+                <p class="text-brand-100 text-xs">Remplissez les informations de votre relation.</p>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="card p-8 sm:p-10 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration -->
+        <div
+            class="absolute top-0 right-0 w-32 h-32 bg-brand-50 dark:bg-brand-900/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none">
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-8 relative z-10">
+            {% csrf_token %}
+
+            <!-- Avatar Upload Section -->
+            <div class="flex flex-col items-center gap-6 mb-4">
+                <div class="relative group">
+                    <template x-if="avatarPreview">
+                        <img :src="avatarPreview"
+                            class="w-28 h-28 rounded-3xl object-cover ring-4 ring-brand-500/10 shadow-lg transition-transform group-hover:scale-105">
+                    </template>
+                    <template x-if="!avatarPreview">
+                        <div
+                            class="w-28 h-28 rounded-3xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-600 font-bold text-3xl">
+                            <i data-lucide="user" class="w-12 h-12 opacity-50"></i>
+                        </div>
+                    </template>
+                    <label
+                        class="absolute -bottom-2 -right-2 p-2.5 bg-brand-600 text-white rounded-xl shadow-lg cursor-pointer hover:bg-brand-700 transition-all hover:scale-110 active:scale-95">
+                        <i data-lucide="camera" class="w-4 h-4"></i>
+                        <input type="file" name="avatar" @change="previewAvatar($event)" class="hidden">
+                    </label>
+                </div>
+                <p class="text-[10px] text-surface-400 uppercase font-bold tracking-widest">Photo du contact</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Identité -->
+                <div class="space-y-5">
+                    <h3
+                        class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest border-l-4 border-brand-600 pl-3 mb-6">
+                        Identité</h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="label">Prénom</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                                form.first_name.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="label">Nom</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                                form.last_name.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="label">Entreprise / Organisation</label>
+                        {{ form.company }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="label">Type de relation</label>
+                        <div class="relative">
+                            {{ form.relationship_type }}
+                            <i data-lucide="chevron-down"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coordonnées -->
+                <div class="space-y-5">
+                    <h3
+                        class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest border-l-4 border-brand-600 pl-3 mb-6">
+                        Coordonnées</h3>
+
+                    <div class="space-y-1.5">
+                        <label class="label">Email</label>
+                        <div class="relative">
+                            <i data-lucide="mail"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                            {{ form.email }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="label">Téléphone</label>
+                        <div class="relative">
+                            <i data-lucide="phone"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                            {{ form.phone_number }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="label">Anniversaire</label>
+                        {{ form.birthday }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-1.5 pt-4">
+                <label class="label">Adresse / Localisation</label>
+                {{ form.address }}
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="label">Notes / Commentaires</label>
+                {{ form.notes }}
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-8 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'contact_list' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary px-8">
+                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer le contact{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field,
+    input[type="text"].field,
+    input[type="email"].field,
+    input[type="date"].field {
+        width: 100%;
+        background-color: #f9fafb;
+        /* neutral-50 */
+        border: 1px solid #e5e7eb;
+        /* neutral-200 */
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        /* text-sm */
+        transition: all 0.2s;
+    }
+
+    .dark .field,
+    .dark select.field,
+    .dark textarea.field {
+        background-color: #171717;
+        /* neutral-900 */
+        border-color: #262626;
+        /* neutral-800 */
+        color: white;
+    }
+
+    .field:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+        border-color: #0ea5e9;
+    }
+
+    .pl-11 {
+        padding-left: 2.75rem !important;
+    }
+
+    select {
+        appearance: none;
+    }
+
+    textarea.resize-none {
+        resize: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function contactFormHandler() {
+        return {
+            avatarPreview: '{% if form.instance.avatar %}{{ form.instance.avatar.url }}{% endif %}',
+            previewAvatar(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    this.avatarPreview = ev.target.result;
+                    this.$nextTick(() => {
+                        lucide.createIcons();
+                    });
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+</script>
+{% endblock %}

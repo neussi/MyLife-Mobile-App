@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mylife_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=mylife_db
+      - POSTGRES_USER=mylife_admin
+      - POSTGRES_PASSWORD=mylife_super_secure_pass
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U mylife_admin -d mylife_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: ./backend
+    container_name: mylife_web
+    command: /usr/local/bin/entrypoint.sh
+    volumes:
+      - ./backend:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    expose:
+      - 8000
+    ports:
+      - "54321:8000"
+    environment:
+      - DEBUG=0
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=mylife_db
+      - SQL_USER=mylife_admin
+      - SQL_PASSWORD=mylife_super_secure_pass
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

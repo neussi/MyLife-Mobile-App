@@ -1,0 +1,498 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Dashboard | MyLife{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
+{% block page_subtitle %}{{ today|date:"l d F Y" }}{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- ── Welcome Hero ─────────────────────────────────────── -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 p-8 sm:p-10 text-white">
+        <!-- Decorative orbs -->
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-sky-400/20 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <!-- Grid texture -->
+        <div class="absolute inset-0 pointer-events-none"
+            style="background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 28px 28px;">
+        </div>
+
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <p class="text-sky-200 text-xs font-semibold uppercase tracking-widest"
+                    style="font-family:'Sora',system-ui,sans-serif;">Bonjour</p>
+                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight"
+                    style="font-family:'Sora',system-ui,sans-serif;">
+                    {{ user.first_name|default:user.username }}
+                </h2>
+                <p class="text-sky-100 text-sm max-w-sm leading-relaxed">
+                    Vous avez <span class="font-bold text-white">{{ tasks_today.count }} tâche{% if tasks_today.count >
+                        1 %}s{% endif %}</span>
+                    prévue{% if tasks_today.count > 1 %}s{% endif %} pour aujourd'hui.
+                </p>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <a href="{% url 'planning_index' %}"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-sm transition-all">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>Planning
+                </a>
+                <a href="{% url 'note_create' %}"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-sky-700 bg-white hover:bg-sky-50 shadow-lg shadow-sky-900/20 transition-all">
+                    <i data-lucide="plus" class="w-4 h-4"></i>Nouvelle note
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Advisor Intelligence ────────────────────────────────── -->
+    {% if advisor_mood %}
+    <div
+        class="card p-5 border-l-4 {% if advisor_mood.mood == 'FURIOUS' %}border-red-600 bg-red-50/50 dark:bg-red-900/10{% elif advisor_mood.mood == 'ANGRY' %}border-red-400{% elif advisor_mood.mood == 'CONCERNED' %}border-amber-400{% else %}border-sky-400{% endif %}">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 {{ advisor_mood.bg_class }}">
+                <i data-lucide="{{ advisor_mood.icon_name }}" class="w-6 h-6"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                    <h3 class="text-sm font-bold text-neutral-900 dark:text-white"
+                        style="font-family:'Sora',sans-serif;">
+                        {% if advisor_mood.mood == 'HAPPY' %}M. Bienveillant
+                        {% elif advisor_mood.mood == 'CONCERNED' %}M. Inquiet
+                        {% elif advisor_mood.mood == 'ANGRY' %}Le Contrôleur
+                        {% else %}LE DRAGON (Attention !){% endif %}
+                    </h3>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-neutral-400">Conseiller
+                        Expert</span>
+                </div>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed italic">
+                    {% if advisor_mood.mood == 'HAPPY' %}"Vous faites du bon travail. Continuez sur cette lancée !"
+                    {% elif advisor_mood.mood == 'CONCERNED' %}"Je commence à m'inquiéter pour certains de vos
+                    objectifs..."
+                    {% elif advisor_mood.mood == 'ANGRY' %}"Ce manque de rigueur est inacceptable. Reprenez-vous !"
+                    {% else %}"C'EST LE CHAOS TOTAL ! Regardez vos mails, on a une discussion TRÈS sérieuse à avoir."{%
+                    endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ── Quick Actions ─────────────────────────────────────── -->
+    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+        {% with actions=actions_list %}
+
+        <a href="{% url 'task_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center text-sky-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Tâche</span>
+        </a>
+
+        <a href="{% url 'event_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center text-violet-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Événement</span>
+        </a>
+
+        <a href="{% url 'note_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Note</span>
+        </a>
+
+        <a href="{% url 'transaction_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="receipt" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Dépense</span>
+        </a>
+
+        <a href="{% url 'contact_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center text-sky-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Contact</span>
+        </a>
+
+        <a href="{% url 'project_create' %}"
+            class="group card p-4 flex flex-col items-center gap-2.5 hover:border-sky-200 dark:hover:border-sky-800/40 hover:-translate-y-1 transition-all duration-150">
+            <div
+                class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="folder-plus" class="w-4 h-4"></i>
+            </div>
+            <span class="text-[11px] font-700 text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+                style="font-weight:600;">Projet</span>
+        </a>
+
+        {% endwith %}
+    </div>
+
+    <!-- ── KPI Cards ─────────────────────────────────────────── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Tâches -->
+        <div class="card p-5">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
+                    <i data-lucide="check-square" class="w-[17px] h-[17px] text-sky-500"></i>
+                </div>
+                <span
+                    class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 text-[10px]">Aujourd'hui</span>
+            </div>
+            <p class="text-[1.625rem] font-bold text-neutral-900 dark:text-white leading-none"
+                style="font-family:'Sora',system-ui,sans-serif;">
+                {{ tasks_completed_today }}<span class="text-base font-normal text-neutral-300 dark:text-neutral-600"> /
+                    {{ tasks_today.count }}</span>
+            </p>
+            <p class="text-xs text-neutral-400 mt-1.5">Tâches complétées</p>
+            <div class="mt-4 h-1 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden">
+                {% if tasks_today.count > 0 %}
+                <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all"
+                    style="width: {% widthratio tasks_completed_today tasks_today.count 100 %}%"></div>
+                {% else %}
+                <div class="h-full" style="width:0%"></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Agenda -->
+        <div class="card p-5">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center">
+                    <i data-lucide="calendar" class="w-[17px] h-[17px] text-violet-500"></i>
+                </div>
+                <span
+                    class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 text-[10px]">Agenda</span>
+            </div>
+            <p class="text-[1.625rem] font-bold text-neutral-900 dark:text-white leading-none"
+                style="font-family:'Sora',system-ui,sans-serif;">
+                {{ events_today.count }}
+            </p>
+            <p class="text-xs text-neutral-400 mt-1.5">Événements aujourd'hui</p>
+            <p class="text-xs text-neutral-300 dark:text-neutral-600 mt-4">
+                {{ tasks_pending }} tâche{% if tasks_pending > 1 %}s{% endif %} en attente
+            </p>
+        </div>
+
+        <!-- Finances -->
+        <div class="card p-5">
+            <div class="flex items-start justify-between mb-4">
+                <div
+                    class="w-9 h-9 rounded-xl {% if balance >= 0 %}bg-emerald-50 dark:bg-emerald-900/20{% else %}bg-red-50 dark:bg-red-900/20{% endif %} flex items-center justify-center">
+                    <i data-lucide="{% if balance >= 0 %}trending-up{% else %}trending-down{% endif %}"
+                        class="w-[17px] h-[17px] {% if balance >= 0 %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
+                </div>
+                <span
+                    class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 text-[10px]">Ce
+                    mois</span>
+            </div>
+            <p class="text-[1.625rem] font-bold leading-none {% if balance >= 0 %}text-emerald-600{% else %}text-red-500{% endif %}"
+                style="font-family:'Sora',system-ui,sans-serif;">
+                {{ balance|floatformat:0 }} €
+            </p>
+            <p class="text-xs text-neutral-400 mt-1.5">Solde mensuel</p>
+            <div class="mt-4 flex items-center gap-3 text-[11px] font-semibold">
+                <span class="text-emerald-500">+{{ income_month|floatformat:0 }} €</span>
+                <span class="text-neutral-200 dark:text-neutral-700">|</span>
+                <span class="text-red-400">-{{ expense_month|floatformat:0 }} €</span>
+            </div>
+        </div>
+
+        <!-- Projets -->
+        <div class="card p-5">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+                    <i data-lucide="folder" class="w-[17px] h-[17px] text-amber-500"></i>
+                </div>
+                <span
+                    class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500 text-[10px]">Actifs</span>
+            </div>
+            <p class="text-[1.625rem] font-bold text-neutral-900 dark:text-white leading-none"
+                style="font-family:'Sora',system-ui,sans-serif;">
+                {{ active_projects.count }}
+            </p>
+            <p class="text-xs text-neutral-400 mt-1.5">Projets en cours</p>
+            <a href="{% url 'project_list' %}"
+                class="mt-4 block text-[11px] font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                Voir les projets
+            </a>
+        </div>
+
+    </div>
+
+    <!-- ── Main Grid ─────────────────────────────────────────── -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- Tâches du jour -->
+        <div class="lg:col-span-2 card overflow-hidden">
+            <div
+                class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
+                    style="font-family:'Sora',system-ui,sans-serif;">
+                    <i data-lucide="list-todo" class="w-4 h-4 text-sky-500"></i>
+                    Tâches du jour
+                </h2>
+                <a href="{% url 'task_create' %}"
+                    class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                    + Ajouter
+                </a>
+            </div>
+
+            <div class="divide-y divide-neutral-100 dark:divide-neutral-700">
+                {% for task in tasks_today %}
+                <div
+                    class="flex items-center gap-3.5 px-5 py-3.5 hover:bg-neutral-25 dark:hover:bg-neutral-800/50 transition-colors group">
+                    <button onclick="toggleTask({{ task.id }})"
+                        class="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all
+                                   {% if task.is_completed %}bg-sky-500 border-sky-500{% else %}border-neutral-200 dark:border-neutral-600 hover:border-sky-400{% endif %}">
+                        {% if task.is_completed %}
+                        <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
+                        {% endif %}
+                    </button>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium truncate
+                                  {% if task.is_completed %}line-through text-neutral-300 dark:text-neutral-600
+                                  {% else %}text-neutral-800 dark:text-neutral-200{% endif %}">
+                            {{ task.title }}
+                        </p>
+                        {% if task.due_date %}
+                        <p class="text-[11px] text-neutral-400 mt-0.5">{{ task.due_date|date:"H:i" }}</p>
+                        {% endif %}
+                    </div>
+                    <span class="badge text-[10px] flex-shrink-0
+                        {% if task.priority == 'HIGH' %}bg-red-50 text-red-500 dark:bg-red-900/20
+                        {% elif task.priority == 'MEDIUM' %}bg-amber-50 text-amber-500 dark:bg-amber-900/20
+                        {% else %}bg-neutral-100 text-neutral-400 dark:bg-neutral-700{% endif %}">
+                        {{ task.get_priority_display }}
+                    </span>
+                    <a href="{% url 'task_edit' task.id %}"
+                        class="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-all">
+                        <i data-lucide="edit-3" class="w-3 h-3"></i>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="px-5 py-14 text-center">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-sky-300"></i>
+                    </div>
+                    <p class="text-sm text-neutral-400">Aucune tâche prévue aujourd'hui.</p>
+                    <a href="{% url 'task_create' %}"
+                        class="mt-2 inline-block text-xs font-semibold text-sky-500 hover:text-sky-600 transition-colors">
+                        Planifier une tâche
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div class="space-y-5">
+
+            <!-- Agenda -->
+            <div class="card overflow-hidden">
+                <div
+                    class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+                    <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        <i data-lucide="calendar" class="w-4 h-4 text-violet-500"></i>
+                        Agenda
+                    </h2>
+                    <a href="{% url 'planning_index' %}"
+                        class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                        Voir tout
+                    </a>
+                </div>
+                <div class="p-4 space-y-3">
+                    {% for event in events_today %}
+                    <div class="flex gap-3 group">
+                        <div class="w-0.5 rounded-full flex-shrink-0 self-stretch opacity-60"
+                            style="background-color: {{ event.color }}"></div>
+                        <div class="flex-1 min-w-0 py-0.5">
+                            <p class="text-xs font-semibold text-neutral-800 dark:text-neutral-200 truncate">{{
+                                event.title }}</p>
+                            <p class="text-[11px] text-neutral-400 mt-0.5">{{ event.start_time|date:"H:i" }} — {{
+                                event.end_time|date:"H:i" }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="py-6 text-center">
+                        <p class="text-xs text-neutral-400">Aucun événement aujourd'hui.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Transactions récentes -->
+            <div class="card overflow-hidden">
+                <div
+                    class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+                    <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        <i data-lucide="receipt" class="w-4 h-4 text-emerald-500"></i>
+                        Transactions
+                    </h2>
+                    <a href="{% url 'finance_dashboard' %}"
+                        class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                        Finance
+                    </a>
+                </div>
+                <div class="divide-y divide-neutral-100 dark:divide-neutral-700">
+                    {% for tx in recent_transactions %}
+                    <div class="flex items-center justify-between px-5 py-3">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div
+                                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
+                                        {% if tx.type == 'INCOME' %}bg-emerald-50 dark:bg-emerald-900/20{% else %}bg-red-50 dark:bg-red-900/20{% endif %}">
+                                <i data-lucide="{% if tx.type == 'INCOME' %}arrow-up-right{% else %}arrow-down-left{% endif %}"
+                                    class="w-3.5 h-3.5 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
+                            </div>
+                            <span class="text-xs font-medium text-neutral-600 dark:text-neutral-400 truncate">
+                                {{ tx.description|default:tx.category }}
+                            </span>
+                        </div>
+                        <span
+                            class="text-xs font-bold flex-shrink-0 ml-2 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}">
+                            {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} €
+                        </span>
+                    </div>
+                    {% empty %}
+                    <div class="py-6 text-center">
+                        <p class="text-xs text-neutral-400">Aucune transaction récente.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Notes + Projets ───────────────────────────────────── -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        <!-- Notes récentes -->
+        <div class="card overflow-hidden">
+            <div
+                class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
+                    style="font-family:'Sora',system-ui,sans-serif;">
+                    <i data-lucide="file-text" class="w-4 h-4 text-amber-500"></i>
+                    Notes récentes
+                </h2>
+                <a href="{% url 'note_list' %}"
+                    class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                    Toutes les notes
+                </a>
+            </div>
+            <div class="grid grid-cols-2 gap-3 p-4">
+                {% for note in recent_notes %}
+                <a href="{% url 'note_detail' note.id %}"
+                    class="group block p-3.5 rounded-xl border border-neutral-100 dark:border-neutral-700
+                          hover:border-sky-200 dark:hover:border-sky-800/40 hover:shadow-md transition-all relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl"
+                        style="background-color: {{ note.color|default:'#0ea5e9' }}"></div>
+                    <p class="text-xs font-semibold text-neutral-900 dark:text-white truncate pl-2.5">{{ note.title }}
+                    </p>
+                    <p class="text-[11px] text-neutral-400 mt-1 line-clamp-2 pl-2.5 leading-relaxed">
+                        {{ note.content|striptags|truncatechars:60 }}
+                    </p>
+                </a>
+                {% empty %}
+                <div class="col-span-2 py-10 text-center">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
+                    </div>
+                    <p class="text-xs text-neutral-400">Aucune note.
+                        <a href="{% url 'note_create' %}"
+                            class="text-sky-500 font-semibold hover:text-sky-600 transition-colors">Créer une note</a>
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Projets actifs -->
+        <div class="card overflow-hidden">
+            <div
+                class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+                <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
+                    style="font-family:'Sora',system-ui,sans-serif;">
+                    <i data-lucide="folder" class="w-4 h-4 text-sky-500"></i>
+                    Projets actifs
+                </h2>
+                <a href="{% url 'project_list' %}"
+                    class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 transition-colors">
+                    Gérer
+                </a>
+            </div>
+            <div class="p-5 space-y-5">
+                {% for project in active_projects %}
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full flex-shrink-0"
+                                style="background-color: {{ project.color }}"></span>
+                            <span class="text-xs font-semibold text-neutral-800 dark:text-neutral-200">{{ project.name
+                                }}</span>
+                        </div>
+                        <span class="text-[11px] font-bold text-neutral-400">{{ project.progress }}%</span>
+                    </div>
+                    <div class="h-1 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-500"
+                            style="width: {{ project.progress }}%; background-color: {{ project.color }}"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="py-10 text-center">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="folder" class="w-4 h-4 text-sky-400"></i>
+                    </div>
+                    <p class="text-xs text-neutral-400">Aucun projet actif.
+                        <a href="{% url 'project_create' %}"
+                            class="text-sky-500 font-semibold hover:text-sky-600 transition-colors">Créer un projet</a>
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function toggleTask(id) {
+        fetch('/planning/tasks/' + id + '/toggle/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(() => window.location.reload());
+    }
+</script>
+{% endblock %}

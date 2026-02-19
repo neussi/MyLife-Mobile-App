@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Catégories Financières | MyLife{% endblock %}
+{% block page_title %}Catégories Financières{% endblock %}
+{% block page_subtitle %}Organisez vos transactions avec des catégories personnalisées.{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-4xl">
+
+    <div class="flex items-center justify-end">
+        <a href="{% url 'category_create' %}" class="btn-primary">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Nouvelle catégorie
+        </a>
+    </div>
+
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-surface-50 dark:bg-surface-800/50">
+                    <tr>
+                        <th class="th">Nom</th>
+                        <th class="th">Type</th>
+                        <th class="th">Couleur</th>
+                        <th class="th text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-100 dark:divide-surface-800">
+                    {% for cat in categories %}
+                    <tr class="table-row">
+                        <td class="td">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                    style="--cat-color: {{ cat.color|default:'#6366f1' }}; background-color: var(--cat-color); opacity: 0.15;">
+                                    <i data-lucide="tag" class="w-4 h-4"
+                                        style="--cat-color: {{ cat.color|default:'#6366f1' }}; color: var(--cat-color);"></i>
+                                </div>
+                                <span class="font-semibold text-surface-900 dark:text-white">{{ cat.name }}</span>
+                            </div>
+                        </td>
+                        <td class="td">
+                            <span
+                                class="badge {% if cat.type == 'INCOME' %}bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30{% else %}bg-red-50 text-red-600 dark:bg-red-900/30{% endif %}">
+                                {{ cat.get_type_display }}
+                            </span>
+                        </td>
+                        <td class="td">
+                            <div class="flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full"
+                                    style="--cat-color: {{ cat.color|default:'#6366f1' }}; background-color: var(--cat-color);"></span>
+                                <span class="text-xs text-surface-400 font-mono">{{ cat.color|upper }}</span>
+                            </div>
+                        </td>
+                        <td class="td text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{% url 'category_edit' cat.id %}"
+                                    class="p-2 rounded-lg text-surface-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </a>
+                                <a href="{% url 'category_delete' cat.id %}"
+                                    class="p-2 rounded-lg text-surface-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="td text-center py-12">
+                            <div class="max-w-xs mx-auto">
+                                <i data-lucide="tag" class="w-10 h-10 text-surface-200 mx-auto mb-4"></i>
+                                <p class="text-sm text-surface-400">Aucune catégorie personnalisée.</p>
+                                <a href="{% url 'category_create' %}"
+                                    class="mt-4 inline-block text-brand-600 font-bold hover:underline">Créer la
+                                    première</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

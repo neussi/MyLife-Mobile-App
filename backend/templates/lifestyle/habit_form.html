@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Définissez vos objectifs pour une meilleure discipline.{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto" x-data="{ habitColor: '{{ form.color.value|default:'#38bdf8' }}' }">
+    <div class="card overflow-hidden relative">
+        <!-- Color Accent Line -->
+        <div class="absolute top-0 left-0 right-0 h-[4px] transition-colors duration-500"
+            :style="{ background: 'linear-gradient(90deg, ' + habitColor + ', ' + habitColor + '88)' }"></div>
+
+        <form method="post" class="p-8 space-y-7">
+            {% csrf_token %}
+
+            <!-- Section Nom -->
+            <div class="space-y-2">
+                <label class="label">Nom de l'habitude</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-[11px] text-red-500 font-medium">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <!-- Section Fréquence -->
+                <div class="space-y-2">
+                    <label class="label">Fréquence</label>
+                    <div class="relative">
+                        {{ form.frequency }}
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400">
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Icône -->
+                <div class="space-y-2">
+                    <label class="label">Icône (Nom Lucide)</label>
+                    <div class="relative group">
+                        <div
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-sky-500 transition-colors">
+                            <i data-lucide="{{ form.icon.value|default:'star' }}" class="w-4 h-4" id="icon-preview"></i>
+                        </div>
+                        {{ form.icon }}
+                    </div>
+                    <p class="text-[10px] text-neutral-400">Ex: <code>activity</code>, <code>book</code>,
+                        <code>heart</code>, <code>coffee</code></p>
+                </div>
+            </div>
+
+            <!-- Section Couleur -->
+            <div class="space-y-2">
+                <label class="label">Couleur de l'habitude</label>
+                <div class="flex items-center gap-4">
+                    <div class="relative w-full">
+                        <input type="color" name="color" x-model="habitColor" class="field h-[46px] p-1 cursor-pointer">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400">
+                            <i data-lucide="palette" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center transition-all duration-300"
+                        :style="{ backgroundColor: habitColor + '18' }">
+                        <i data-lucide="sparkle" class="w-6 h-6" :style="{ color: habitColor }"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-6 border-t border-neutral-100 dark:border-neutral-700 flex items-center justify-end gap-3">
+                <a href="{% url 'lifestyle_dashboard' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary px-8">
+                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer l'habitude{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info Box -->
+    <div
+        class="mt-8 p-6 bg-sky-50 dark:bg-sky-900/20 rounded-2xl border border-sky-100 dark:border-sky-900/30 flex gap-4">
+        <div
+            class="w-10 h-10 rounded-xl bg-white dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <i data-lucide="info" class="w-5 h-5 text-sky-500"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-bold text-sky-900 dark:text-sky-300 mb-1"
+                style="font-family:'Sora',system-ui,sans-serif;">Conseil Premium</h4>
+            <p class="text-xs text-sky-700 dark:text-sky-400 leading-relaxed">
+                Choisissez des couleurs vives pour les habitudes énergisantes (sport) et des couleurs douces pour les
+                habitudes relaxantes (lecture, méditation).
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Preview icon change
+    const iconInput = document.querySelector('input[name="icon"]');
+    const iconPreview = document.getElementById('icon-preview');
+
+    iconInput.addEventListener('input', (e) => {
+        const iconName = e.target.value || 'star';
+        iconPreview.setAttribute('data-lucide', iconName);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+</script>
+{% endblock %}

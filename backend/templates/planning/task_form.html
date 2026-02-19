@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Organisez vos priorités avec précision.{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header Card -->
+    <div
+        class="card mb-6 p-6 bg-gradient-to-br from-sky-500 to-sky-600 text-white border-none shadow-lg shadow-sky-500/20 overflow-hidden relative">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="check-square" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Détails de la tâche</h2>
+                <p class="text-sky-100 text-xs">Remplissez les informations ci-dessous.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration -->
+        <div
+            class="absolute top-0 right-0 w-32 h-32 bg-sky-50 dark:bg-sky-900/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none">
+        </div>
+
+        <form method="post" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="type" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Titre de la tâche
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.title.errors.0 }}
+                </p>{% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="align-left" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Description (optionnelle)
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                    form.description.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Priority -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="flag" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Priorité
+                    </label>
+                    <div class="relative custom-select">
+                        {{ form.priority }}
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.priority.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.priority.errors.0 }}</p>{% endif %}
+                </div>
+
+                <!-- Category -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="tag" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Catégorie
+                    </label>
+                    <div class="relative custom-select">
+                        {{ form.category }}
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.category.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.category.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Due Date -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Date d'échéance
+                </label>
+                <div class="relative">
+                    <i data-lucide="clock"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                    {{ form.due_date }}
+                </div>
+                {% if form.due_date.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                    form.due_date.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Project -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="folder" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Projet associé (optionnel)
+                </label>
+                <div class="relative custom-select">
+                    {{ form.project }}
+                    <i data-lucide="chevron-down"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                </div>
+                {% if form.project.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.project.errors.0
+                    }}</p>{% endif %}
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'planning_index' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary px-8">
+                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer la tâche{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field {
+        @apply w-full bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all;
+    }
+
+    .custom-select select {
+        @apply appearance-none;
+    }
+
+    textarea.field {
+        @apply min-h-[100px] resize-none;
+    }
+
+    input[type="datetime-local"].field {
+        @apply pl-11 shadow-sm;
+    }
+</style>
+{% endblock %}

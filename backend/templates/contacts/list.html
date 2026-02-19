@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Contacts | MyLife{% endblock %}
+{% block page_title %}Contacts{% endblock %}
+{% block page_subtitle %}Gérez votre réseau et vos relations.{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- ── Barre d'actions ───────────────────────────────────── -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <form method="get" class="flex flex-1 max-w-xl">
+            <div class="relative flex-1">
+                <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Rechercher un contact..."
+                    class="field pl-10 bg-white dark:bg-surface-900 border-surface-200 rounded-r-none">
+            </div>
+            <button type="submit" class="btn-primary rounded-l-none border-l-0 px-4">
+                Rechercher
+            </button>
+        </form>
+
+        <a href="{% url 'contact_create' %}" class="btn-primary">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            Nouveau contact
+        </a>
+    </div>
+
+    <!-- ── Grille de contacts ─────────────────────────────────── -->
+    {% if contacts %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for contact in contacts %}
+        <div class="card p-6 group hover:shadow-card-hover transition-all flex flex-col">
+            <div class="flex items-center gap-4 mb-6">
+                {% if contact.avatar %}
+                <img src="{{ contact.avatar.url }}" alt="{{ contact.first_name }}"
+                    class="w-14 h-14 rounded-2xl object-cover ring-2 ring-surface-50 dark:ring-surface-800">
+                {% else %}
+                <div
+                    class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-xl">
+                    {{ contact.first_name|first|upper }}{{ contact.last_name|first|upper }}
+                </div>
+                {% endif %}
+                <div class="min-w-0">
+                    <h3 class="text-sm font-bold text-surface-900 dark:text-white truncate">{{ contact.first_name }} {{
+                        contact.last_name }}</h3>
+                    <p class="text-[11px] text-surface-400 truncate mt-0.5">{{ contact.job_title|default:"Contact" }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-6 flex-1">
+                {% if contact.email %}
+                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
+                    <i data-lucide="mail" class="w-3.5 h-3.5 text-surface-400"></i>
+                    <span class="truncate">{{ contact.email }}</span>
+                </div>
+                {% endif %}
+                {% if contact.phone %}
+                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-surface-400"></i>
+                    <span>{{ contact.phone }}</span>
+                </div>
+                {% endif %}
+                {% if contact.company %}
+                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
+                    <i data-lucide="building" class="w-3.5 h-3.5 text-surface-400"></i>
+                    <span class="truncate">{{ contact.company }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center gap-2 pt-4 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'contact_detail' contact.id %}"
+                    class="flex-1 btn-secondary justify-center py-2 text-xs">
+                    Détails
+                </a>
+                <a href="{% url 'contact_edit' contact.id %}"
+                    class="p-2 rounded-lg text-surface-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="{% url 'contact_delete' contact.id %}"
+                    class="p-2 rounded-lg text-surface-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card p-20 flex flex-col items-center justify-center text-center">
+        <div class="w-16 h-16 bg-surface-50 dark:bg-surface-800 rounded-2xl flex items-center justify-center mb-4">
+            <i data-lucide="users" class="w-8 h-8 text-surface-200"></i>
+        </div>
+        <h3 class="text-lg font-bold text-surface-900 dark:text-white">Aucun contact</h3>
+        <p class="text-sm text-surface-500 max-w-xs mx-auto mt-2">
+            Ajoutez votre premier contact pour commencer à organiser votre carnet d'adresses.
+        </p>
+        <a href="{% url 'contact_create' %}" class="btn-primary mt-6">
+            Ajouter un contact
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Suivez vos flux financiers avec précision.{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto" x-data="{ type: '{{ form.type.value|default:'EXPENSE' }}' }">
+    <!-- Header Card -->
+    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg transition-colors duration-500"
+        :class="type === 'INCOME' ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-red-600 shadow-red-500/20'">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4 text-white">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="receipt" class="w-6 h-6" x-show="type === 'EXPENSE'"></i>
+                <i data-lucide="trending-up" class="w-6 h-6" x-show="type === 'INCOME'"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Flux Financier</h2>
+                <p class="text-white/80 text-xs"
+                    x-text="type === 'INCOME' ? 'Enregistrez un revenu' : 'Enregistrez une dépense'"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration indicator -->
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 transition-colors duration-500 pointer-events-none"
+            :class="type === 'INCOME' ? 'bg-emerald-500' : 'bg-red-500'"></div>
+
+        <form method="post" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <!-- Type Selector (Income/Expense) -->
+            <div class="flex p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="type" value="EXPENSE" x-model="type" class="sr-only">
+                    <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
+                        :class="type === 'EXPENSE' ? 'bg-white dark:bg-neutral-700 text-red-600 shadow-sm' : 'text-neutral-500'">
+                        Dépense
+                    </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="type" value="INCOME" x-model="type" class="sr-only">
+                    <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
+                        :class="type === 'INCOME' ? 'bg-white dark:bg-neutral-700 text-emerald-600 shadow-sm' : 'text-neutral-500'">
+                        Revenu
+                    </div>
+                </label>
+            </div>
+
+            <!-- Amount -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="euro" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Montant (€)
+                </label>
+                <div class="relative group">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 font-bold">€</span>
+                    {{ form.amount }}
+                </div>
+                {% if form.amount.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.amount.errors.0 }}
+                </p>{% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="align-left" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Description
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                    form.description.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Date -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Date
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="clock"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                        {{ form.date }}
+                    </div>
+                    {% if form.date.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.date.errors.0 }}
+                    </p>{% endif %}
+                </div>
+
+                <!-- Category -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="tag" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Catégorie
+                    </label>
+                    <div class="relative">
+                        {{ form.category }}
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.category.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.category.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn text-white px-8 transition-colors"
+                    :class="type === 'INCOME' ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-600' : 'bg-red-600 hover:bg-red-700 border-red-600'">
+                    {% if form.instance.pk %}Enregistrer{% else %}Ajouter la transaction{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field,
+    input[type="number"].field,
+    input[type="date"].field {
+        width: 100%;
+        background-color: #f9fafb;
+        /* neutral-50 */
+        border: 1px solid #e5e7eb;
+        /* neutral-200 */
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        /* text-sm */
+        transition: all 0.2s;
+    }
+
+    .dark .field,
+    .dark select.field,
+    .dark textarea.field {
+        background-color: #171717;
+        /* neutral-900 */
+        border-color: #262626;
+        /* neutral-800 */
+        color: white;
+    }
+
+    .field:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+        /* sky-500/20 */
+        border-color: #0ea5e9;
+        /* sky-500 */
+    }
+
+    input[type="number"].field {
+        padding-left: 2.25rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    input[type="date"].field {
+        padding-left: 2.75rem;
+    }
+
+    select {
+        appearance: none;
+    }
+</style>
+{% endblock %}

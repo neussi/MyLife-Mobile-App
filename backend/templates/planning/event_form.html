@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Planifiez vos moments importants avec style.{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header Card -->
+    <div
+        class="card mb-6 p-6 bg-gradient-to-br from-violet-500 to-violet-600 text-white border-none shadow-lg shadow-violet-500/20 overflow-hidden relative">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="calendar" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Détails de l'événement
+                </h2>
+                <p class="text-violet-100 text-xs">Définissez vos rendez-vous et activités.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration -->
+        <div
+            class="absolute top-0 right-0 w-32 h-32 bg-violet-50 dark:bg-violet-900/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none">
+        </div>
+
+        <form method="post" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="type" class="w-3.5 h-3.5 text-violet-500"></i>
+                    Titre de l'événement
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.title.errors.0 }}
+                </p>{% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="align-left" class="w-3.5 h-3.5 text-violet-500"></i>
+                    Description (optionnelle)
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                    form.description.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Start Time -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-violet-500"></i>
+                        Début
+                    </label>
+                    {{ form.start_time }}
+                    {% if form.start_time.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.start_time.errors.0 }}</p>{% endif %}
+                </div>
+
+                <!-- End Time -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="clock-active" class="w-3.5 h-3.5 text-violet-500"></i>
+                        Fin
+                    </label>
+                    {{ form.end_time }}
+                    {% if form.end_time.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.end_time.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Location -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-violet-500"></i>
+                        Lieu
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="map-pin"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                        {{ form.location }}
+                    </div>
+                    {% if form.location.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.location.errors.0 }}</p>{% endif %}
+                </div>
+
+                <!-- Color Picker -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="palette" class="w-3.5 h-3.5 text-violet-500"></i>
+                        Couleur
+                    </label>
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1 relative">
+                            {{ form.color }}
+                            <i data-lucide="palette"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+                    {% if form.color.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.color.errors.0
+                        }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pb-4">
+                <div class="flex items-center gap-2">
+                    {{ form.is_all_day }}
+                    <label for="{{ form.is_all_day.id_for_label }}"
+                        class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Toute la journée</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-neutral-500">Rappel (min) :</label>
+                    {{ form.reminder_minutes }}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'planning_index' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary bg-violet-600 border-violet-600 hover:bg-violet-700 px-8">
+                    {% if form.instance.pk %}Enregistrer{% else %}Créer l'événement{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field {
+        @apply w-full bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all;
+    }
+
+    textarea.field {
+        @apply min-h-[100px] resize-none;
+    }
+
+    input[type="color"].field {
+        @apply h-[46px] p-1 cursor-pointer;
+    }
+
+    input[type="datetime-local"].field {
+        @apply shadow-sm;
+    }
+
+    input[type="number"].field {
+        @apply w-20;
+    }
+
+    input[type="checkbox"] {
+        @apply w-4 h-4 rounded border-neutral-300 text-violet-600 focus:ring-violet-500;
+    }
+</style>
+{% endblock %}

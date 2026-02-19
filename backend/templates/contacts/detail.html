@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ contact.first_name }} {{ contact.last_name }} | MyLife{% endblock %}
+{% block page_header %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Back link -->
+    <a href="{% url 'contact_list' %}"
+        class="inline-flex items-center gap-2 text-sm text-surface-500 hover:text-brand-600 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Retour aux contacts
+    </a>
+
+    <!-- Contact Header Card -->
+    <div class="card p-10 border-surface-200/60 dark:border-surface-800/60">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+            <!-- Avatar -->
+            {% if contact.avatar %}
+            <img src="{{ contact.avatar.url }}"
+                class="w-32 h-32 rounded-3xl object-cover ring-4 ring-brand-500/10 shadow-xl">
+            {% else %}
+            <div
+                class="w-32 h-32 rounded-3xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-4xl ring-4 ring-brand-500/10">
+                {{ contact.first_name|first|upper }}{{ contact.last_name|first|upper }}
+            </div>
+            {% endif %}
+
+            <div class="flex-1 text-center md:text-left">
+                <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+                    <h1 class="text-3xl font-bold text-surface-900 dark:text-white">{{ contact.first_name }} {{
+                        contact.last_name }}</h1>
+                    <span class="badge bg-surface-100 dark:bg-surface-800 text-surface-500 self-center">{{
+                        contact.relationship_type|default:"Contact" }}</span>
+                </div>
+                <p class="text-lg text-surface-500 dark:text-surface-400 font-medium">{{ contact.job_title|default:"—"
+                    }}</p>
+
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-6">
+                    <a href="{% url 'contact_edit' contact.id %}" class="btn-primary">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        Modifier le contact
+                    </a>
+                    <a href="{% url 'contact_delete' contact.id %}"
+                        class="btn-secondary text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        Supprimer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Informations de contact -->
+        <div class="md:col-span-2 space-y-6">
+            <div class="card p-8 border-surface-200/60 dark:border-surface-800/60">
+                <h2
+                    class="text-sm font-bold text-surface-900 dark:text-white uppercase tracking-widest mb-8 flex items-center gap-3">
+                    <i data-lucide="info" class="w-4 h-4 text-brand-500"></i>
+                    Informations du contact
+                </h2>
+
+                <div class="space-y-6">
+                    {% if contact.email %}
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-800 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="mail" class="w-5 h-5 text-surface-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-surface-400 uppercase font-bold tracking-wider mb-0.5">Email</p>
+                            <a href="mailto:{{ contact.email }}"
+                                class="text-sm font-semibold text-brand-600 hover:underline">{{ contact.email }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.phone %}
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-800 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="phone" class="w-5 h-5 text-surface-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-surface-400 uppercase font-bold tracking-wider mb-0.5">Téléphone
+                            </p>
+                            <p class="text-sm font-semibold text-surface-700 dark:text-surface-300">{{ contact.phone }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.company %}
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-800 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="building" class="w-5 h-5 text-surface-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-surface-400 uppercase font-bold tracking-wider mb-0.5">Entreprise
+                            </p>
+                            <p class="text-sm font-semibold text-surface-700 dark:text-surface-300">{{ contact.company
+                                }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.address %}
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-800 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-surface-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-surface-400 uppercase font-bold tracking-wider mb-0.5">Adresse
+                            </p>
+                            <p class="text-sm font-medium text-surface-600 dark:text-surface-400">{{ contact.address }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.birthday %}
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-surface-50 dark:bg-surface-800 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="cake" class="w-5 h-5 text-surface-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-surface-400 uppercase font-bold tracking-wider mb-0.5">
+                                Anniversaire</p>
+                            <p class="text-sm font-semibold text-surface-700 dark:text-surface-300">{{
+                                contact.birthday|date:"d F Y" }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="space-y-6">
+            <div class="card p-6 border-surface-200/60 dark:border-surface-800/60 h-full">
+                <h2
+                    class="text-sm font-bold text-surface-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-3">
+                    <i data-lucide="file-text" class="w-4 h-4 text-amber-500"></i>
+                    Notes
+                </h2>
+                <div class="text-sm text-surface-500 dark:text-surface-400 leading-relaxed italic">
+                    {% if contact.notes %}
+                    {{ contact.notes|linebreaks }}
+                    {% else %}
+                    Aucune note pour ce contact.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

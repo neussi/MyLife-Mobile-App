@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Transactions | MyLife{% endblock %}
+{% block page_title %}Historique des Transactions{% endblock %}
+{% block page_subtitle %}Consultez et filtrez l'ensemble de vos mouvements financiers.{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- ── Filtres ────────────────────────────────────────────── -->
+    <div class="card p-5 border-surface-200/60 dark:border-surface-800/60">
+        <form method="get" class="flex flex-wrap items-end gap-4">
+            <div class="space-y-1.5 flex-1 min-w-[200px]">
+                <label class="label">Type</label>
+                <select name="type" class="field" onchange="this.form.submit()">
+                    <option value="">Tous les types</option>
+                    <option value="INCOME" {% if type_filter=='INCOME' %}selected{% endif %}>Revenus</option>
+                    <option value="EXPENSE" {% if type_filter=='EXPENSE' %}selected{% endif %}>Dépenses</option>
+                </select>
+            </div>
+
+            <div class="space-y-1.5 flex-1 min-w-[200px]">
+                <label class="label">Catégorie</label>
+                <select name="category" class="field" onchange="this.form.submit()">
+                    <option value="">Toutes les catégories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if category_filter==cat.id|stringformat:"i" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="{% url 'transaction_list' %}" class="btn-secondary">Réinitialiser</a>
+                <a href="{% url 'transaction_create' %}" class="btn-primary">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Ajouter
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- ── Liste des transactions ────────────────────────────── -->
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-surface-50 dark:bg-surface-800/50">
+                    <tr>
+                        <th class="th">Date</th>
+                        <th class="th">Description</th>
+                        <th class="th">Catégorie</th>
+                        <th class="th text-right">Montant</th>
+                        <th class="th text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-100 dark:divide-surface-800">
+                    {% for tx in transactions %}
+                    <tr class="table-row">
+                        <td class="td text-surface-400 whitespace-nowrap">{{ tx.date|date:"d/m/Y" }}</td>
+                        <td class="td">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+                                    {% if tx.type == 'INCOME' %}bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600{% else %}bg-red-50 dark:bg-red-900/20 text-red-600{% endif %}">
+                                    <i data-lucide="{% if tx.type == 'INCOME' %}arrow-up-right{% else %}arrow-down-left{% endif %}"
+                                        class="w-4 h-4"></i>
+                                </div>
+                                <span class="font-medium text-surface-900 dark:text-white truncate max-w-[300px]">{{
+                                    tx.description|default:"—" }}</span>
+                            </div>
+                        </td>
+                        <td class="td">
+                            {% if tx.category %}
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full"
+                                    style="background-color: {{ tx.category.color }}"></span>
+                                <span
+                                    class="badge bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400">{{
+                                    tx.category.name }}</span>
+                            </div>
+                            {% else %}
+                            <span class="text-surface-300 dark:text-surface-600 text-xs italic">Sans catégorie</span>
+                            {% endif %}
+                        </td>
+                        <td
+                            class="td text-right font-bold text-base {% if tx.type == 'INCOME' %}text-emerald-600{% else %}text-red-600{% endif %}">
+                            {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} €
+                        </td>
+                        <td class="td text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{% url 'transaction_edit' tx.id %}"
+                                    class="p-2 rounded-lg text-surface-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </a>
+                                <a href="{% url 'transaction_delete' tx.id %}"
+                                    class="p-2 rounded-lg text-surface-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="td text-center py-24 text-surface-400">
+                            <div class="max-w-xs mx-auto">
+                                <i data-lucide="receipt" class="w-12 h-12 mx-auto mb-4 text-surface-200"></i>
+                                <h3 class="text-lg font-bold text-surface-900 dark:text-white mb-2">Aucune transaction
+                                </h3>
+                                <p class="text-sm">Ajustez vos filtres ou commencez à enregistrer vos dépenses.</p>
+                                <a href="{% url 'transaction_create' %}" class="btn-primary mt-6">Nouvelle
+                                    transaction</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

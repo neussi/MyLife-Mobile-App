@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}Lifestyle & Discipline | MyLife{% endblock %}
+{% block page_title %}Lifestyle & Discipline{% endblock %}
+{% block page_subtitle %}Cultivez vos habitudes et suivez votre bien-être quotidien.{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- ── Header Actions ──────────────────────────────────────── -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <a href="{% url 'habit_create' %}" class="btn btn-primary">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                Nouvelle habitude
+            </a>
+            <a href="{% url 'mood_log' %}" class="btn btn-secondary">
+                <i data-lucide="smile" class="w-4 h-4 text-sky-500"></i>
+                Comment ça va ?
+            </a>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-neutral-400">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            <span>{{ today|date:"l d F" }}</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- ── Habits Column (Left) ─────────────────────────────── -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="card overflow-hidden">
+                <div
+                    class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-700 flex items-center justify-between">
+                    <h2 class="text-base font-bold text-neutral-900 dark:text-white flex items-center gap-2.5"
+                        style="font-family:'Sora',system-ui,sans-serif;">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-sky-500"></i>
+                        Habitudes du jour
+                    </h2>
+                    <span class="text-xs font-semibold text-neutral-400 uppercase tracking-widest">Discipline</span>
+                </div>
+
+                <div class="divide-y divide-neutral-100 dark:divide-neutral-700">
+                    {% for log in habit_logs %}
+                    <div
+                        class="flex items-center gap-4 px-6 py-4 transition-all hover:bg-neutral-25 dark:hover:bg-neutral-800/40 group">
+                        <!-- Custom Checkbox -->
+                        <button onclick="toggleHabit({{ log.id }}, this)"
+                            class="w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all duration-300
+                                {% if log.completed %}bg-sky-500 border-sky-500 shadow-lg shadow-sky-500/20{% else %}border-neutral-200 dark:border-neutral-600 hover:border-sky-400{% endif %}">
+                            <i data-lucide="check"
+                                class="w-3.5 h-3.5 text-white {% if not log.completed %}opacity-0{% endif %} transition-opacity"></i>
+                        </button>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full"
+                                    style="--habit-color: {{ log.habit.color|default:'#38bdf8' }}; background-color: var(--habit-color);"></span>
+                                <p
+                                    class="text-sm font-bold text-neutral-800 dark:text-neutral-200 truncate transition-all {% if log.completed %}opacity-50 line-through{% endif %}">
+                                    {{ log.habit.name }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-neutral-50 dark:bg-neutral-800 flex items-center justify-center">
+                                <i data-lucide="{{ log.habit.icon }}" class="w-4 h-4"
+                                    style="--habit-color: {{ log.habit.color|default:'#38bdf8' }}; color: var(--habit-color);"></i>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a href="{% url 'habit_edit' log.habit.id %}"
+                                    class="p-2 rounded-lg text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20 opacity-0 group-hover:opacity-100 transition-all"
+                                    title="Modifier">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </a>
+                                <a href="{% url 'habit_delete' log.habit.id %}"
+                                    class="p-2 rounded-lg text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
+                                    title="Supprimer">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="px-6 py-16 text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="sparkles" class="w-8 h-8 text-sky-300"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-neutral-900 dark:text-white"
+                                style="font-family:'Sora',system-ui,sans-serif;">Prêt pour une nouvelle routine ?</h3>
+                            <p class="text-xs text-neutral-400 mt-1 max-w-[200px] mx-auto">Créez votre première habitude
+                                pour commencer à tracker votre discipline.</p>
+                            <a href="{% url 'habit_create' %}" class="mt-6 inline-flex btn btn-primary text-xs">Créer ma
+                                première habitude</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Streak/Stats placeholder (Visual only for now) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="card p-6 border-l-4 border-l-sky-500">
+                        <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Meilleure série
+                        </p>
+                        <h4 class="text-2xl font-bold text-neutral-900 dark:text-white"
+                            style="font-family:'Sora',system-ui,sans-serif;">12 Jours</h4>
+                        <p class="text-xs text-neutral-400 mt-2">Continuez comme ça !</p>
+                    </div>
+                    <div class="card p-6 border-l-4 border-l-emerald-500">
+                        <p class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Taux de
+                            réussite
+                        </p>
+                        <h4 class="text-2xl font-bold text-neutral-900 dark:text-white"
+                            style="font-family:'Sora',system-ui,sans-serif;">85%</h4>
+                        <p class="text-xs text-neutral-400 mt-2">Cette semaine</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Mood Column (Right) ────────────────────────────── -->
+            <div class="space-y-6">
+                <div class="card overflow-hidden">
+                    <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-700">
+                        <h2 class="text-base font-bold text-neutral-900 dark:text-white flex items-center gap-2.5"
+                            style="font-family:'Sora',system-ui,sans-serif;">
+                            <i data-lucide="heart" class="w-5 h-5 text-red-500"></i>
+                            Humeur Récente
+                        </h2>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        {% for mood in recent_moods %}
+                        <div
+                            class="relative pl-6 pb-6 last:pb-0 border-l border-neutral-100 dark:border-neutral-700 group">
+                            <div class="absolute -left-[5px] top-0 w-[9px] h-[9px] rounded-full bg-sky-500"></div>
+                            <div class="flex items-center justify-between gap-3 mb-1">
+                                <span class="text-[11px] font-bold text-neutral-400">{{ mood.created_at|date:"d M"
+                                    }}</span>
+                                <div class="flex items-center gap-1.5">
+                                    {% if mood.score == 5 %}
+                                    <span class="text-lg">🤩</span>
+                                    {% elif mood.score == 4 %}
+                                    <span class="text-lg">🙂</span>
+                                    {% elif mood.score == 3 %}
+                                    <span class="text-lg">😐</span>
+                                    {% elif mood.score == 2 %}
+                                    <span class="text-lg">😟</span>
+                                    {% else %}
+                                    <span class="text-lg">😫</span>
+                                    {% endif %}
+                                    <span class="text-xs font-700 text-neutral-700 dark:text-neutral-300">{{
+                                        mood.get_score_display }}</span>
+                                </div>
+                                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                    <a href="{% url 'mood_edit' mood.id %}"
+                                        class="p-1.5 rounded-lg text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20"
+                                        title="Modifier">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                    <a href="{% url 'mood_delete' mood.id %}"
+                                        class="p-1.5 rounded-lg text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        title="Supprimer">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% if mood.note %}
+                            <p class="text-xs text-neutral-500 leading-relaxed italic">"{{ mood.note|truncatechars:100
+                                }}"
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <p class="text-xs text-neutral-400">Aucun enregistrement d'humeur.</p>
+                            <a href="{% url 'mood_log' %}"
+                                class="mt-4 inline-block text-xs font-bold text-sky-500 hover:underline">Enregistrer mon
+                                humeur</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Wellness Tip -->
+                <div
+                    class="rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 p-6 text-white shadow-xl shadow-sky-500/20">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+                        <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-sm mb-2" style="font-family:'Sora',system-ui,sans-serif;">Le saviez-vous ?
+                    </h4>
+                    <p class="text-xs text-sky-50 leading-relaxed opacity-90">
+                        Il faut en moyenne 66 jours pour qu'un nouveau comportement devienne une habitude automatique.
+                        Soyez
+                        patient avec vous-même !
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block extra_scripts %}
+    <script>
+        function toggleHabit(logId, btn) {
+            // Prevent multiple clicks
+            if (btn.disabled) return;
+            btn.disabled = true;
+
+            fetch(`/lifestyle/habits/${logId}/toggle/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        const icon = btn.querySelector('i');
+                        const text = btn.closest('div.group').querySelector('p');
+
+                        if (data.completed) {
+                            btn.classList.add('bg-sky-500', 'border-sky-500', 'shadow-lg', 'shadow-sky-500/20');
+                            btn.classList.remove('border-neutral-200', 'dark:border-neutral-600');
+                            icon.classList.remove('opacity-0');
+                            text.classList.add('opacity-50', 'line-through');
+                        } else {
+                            btn.classList.remove('bg-sky-500', 'border-sky-500', 'shadow-lg', 'shadow-sky-500/20');
+                            btn.classList.add('border-neutral-200', 'dark:border-neutral-600');
+                            icon.classList.add('opacity-0');
+                            text.classList.remove('opacity-50', 'line-through');
+                        }
+                    }
+                    btn.disabled = false;
+                })
+                .catch(err => {
+                    console.error(err);
+                    btn.disabled = false;
+                });
+        }
+    </script>
+    {% endblock %}

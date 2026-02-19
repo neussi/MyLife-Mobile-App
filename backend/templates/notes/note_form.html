@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Capturez vos idées en un clic avec style.{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto" x-data="noteFormHandler()">
+    <!-- Header Card -->
+    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg text-white transition-all duration-300"
+        :style="{ backgroundColor: noteColor, color: getContrastColor(noteColor) }">
+        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <i data-lucide="edit-3" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Identité de la Note</h2>
+                <p class="text-xs opacity-80">Définissez le contexte et le style de votre pensée.</p>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="card p-8 sm:p-10 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration indicator -->
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"
+            :style="{ backgroundColor: noteColor }"></div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="type" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Titre de la note
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.title.errors.0 }}
+                </p>{% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <!-- Category -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="tag" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Catégorie
+                    </label>
+                    <div class="relative custom-select">
+                        {{ form.category }}
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.category.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
+                        form.category.errors.0 }}</p>{% endif %}
+                </div>
+
+                <!-- Color -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="palette" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Couleur
+                    </label>
+                    <div class="relative">
+                        {{ form.color }}
+                        <i data-lucide="palette"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.color.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.color.errors.0
+                        }}</p>{% endif %}
+                </div>
+
+                <!-- Pin -->
+                <div class="space-y-1.5 flex flex-col justify-end">
+                    <label
+                        class="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-sky-500 transition-all">
+                        <div class="relative flex items-center">
+                            {{ form.is_pinned }}
+                            <div class="w-10 h-5 bg-neutral-300 dark:bg-neutral-700 rounded-full transition-all"
+                                :class="pinned ? 'bg-sky-600' : ''"></div>
+                            <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-all shadow-sm"
+                                :class="pinned ? 'translate-x-5' : ''"></div>
+                        </div>
+                        <span
+                            class="text-xs font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="pin" class="w-3.5 h-3.5"></i>
+                            Épingler
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="align-left" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Contenu
+                </label>
+                {{ form.content }}
+                {% if form.content.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.content.errors.0
+                    }}</p>{% endif %}
+            </div>
+
+            <!-- Image Upload -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="image" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Ajouter une image
+                </label>
+                <div class="mt-2 flex items-center gap-6">
+                    <div class="relative group">
+                        <template x-if="imagePreview">
+                            <div class="relative">
+                                <img :src="imagePreview"
+                                    class="w-32 h-32 rounded-2xl object-cover ring-4 ring-neutral-50 dark:ring-neutral-800 shadow-lg">
+                                <button type="button" @click="imagePreview = null; $refs.imageInput.value = ''"
+                                    class="absolute -top-2 -right-2 p-1.5 bg-red-600 text-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all">
+                                    <i data-lucide="x" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                        </template>
+                        <template x-if="!imagePreview">
+                            <label
+                                class="w-32 h-32 rounded-2xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center cursor-pointer hover:border-sky-500 hover:bg-sky-50/10 transition-all group">
+                                <i data-lucide="image" class="w-6 h-6 text-neutral-300 group-hover:text-sky-500"></i>
+                                <span
+                                    class="text-[10px] font-bold text-neutral-400 mt-2 uppercase tracking-tight group-hover:text-sky-500">Parcourir</span>
+                                <input type="file" name="image" @change="previewImage($event)" x-ref="imageInput"
+                                    class="hidden">
+                            </label>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="hash" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Tags (séparés par des virgules)
+                </label>
+                {{ form.tags }}
+                {% if form.tags.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.tags.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-8 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'note_list' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary px-8"
+                    :style="{ backgroundColor: noteColor, color: getContrastColor(noteColor), borderColor: noteColor }">
+                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer la note{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field,
+    input[type="text"].field {
+        width: 100%;
+        background-color: #f9fafb;
+        /* neutral-50 */
+        border: 1px solid #e5e7eb;
+        /* neutral-200 */
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        /* text-sm */
+        transition: all 0.2s;
+    }
+
+    .dark .field,
+    .dark select.field,
+    .dark textarea.field {
+        background-color: #171717;
+        /* neutral-900 */
+        border-color: #262626;
+        /* neutral-800 */
+        color: white;
+    }
+
+    .field:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+    }
+
+    input[type="color"].field {
+        height: 46px;
+        padding: 0.25rem;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    select {
+        appearance: none;
+    }
+
+    textarea.resize-none {
+        resize: none;
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function noteFormHandler() {
+        return {
+            noteColor: '{{ form.color.value|default:"#6366f1" }}',
+            pinned: {% if form.is_pinned.value %}true{% else %} false{% endif %},
+        imagePreview: '{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}',
+            previewImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                this.imagePreview = ev.target.result;
+                this.$nextTick(() => lucide.createIcons());
+            }
+            reader.readAsDataURL(file);
+        },
+        getContrastColor(hexcolor) {
+            if (!hexcolor) return '#fff';
+            hexcolor = hexcolor.replace("#", "");
+            const r = parseInt(hexcolor.substr(0, 2), 16);
+            const g = parseInt(hexcolor.substr(2, 2), 16);
+            const b = parseInt(hexcolor.substr(4, 2), 16);
+            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            return (yiq >= 128) ? '#000' : '#fff';
+        }
+    }
+    }
+</script>
+{% endblock %}

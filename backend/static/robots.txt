@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /auth/
+Sitemap: http://mylife.boutik237.com/sitemap.xml

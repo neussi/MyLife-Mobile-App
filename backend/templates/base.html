@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr" x-data="appState()" :class="{ 'dark': dark }" x-init="init()">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MyLife{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                        display: ['Sora', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        sky: {
+                            25:  '#f0f9ff',
+                            50:  '#e0f2fe',
+                            100: '#bae6fd',
+                            200: '#7dd3fc',
+                            300: '#38bdf8',
+                            400: '#0ea5e9',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#082f49',
+                        },
+                        neutral: {
+                            0:   '#ffffff',
+                            25:  '#fafafa',
+                            50:  '#f5f5f5',
+                            100: '#eeeeee',
+                            150: '#e5e5e5',
+                            200: '#d4d4d4',
+                            300: '#a3a3a3',
+                            400: '#737373',
+                            500: '#525252',
+                            600: '#404040',
+                            700: '#2d2d2d',
+                            800: '#1c1c1c',
+                            900: '#0f0f0f',
+                        }
+                    },
+                    boxShadow: {
+                        'xs':  '0 1px 2px 0 rgb(0 0 0 / 0.04)',
+                        'sm':  '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
+                        'md':  '0 4px 12px -2px rgb(0 0 0 / 0.07), 0 2px 4px -1px rgb(0 0 0 / 0.04)',
+                        'lg':  '0 8px 24px -4px rgb(0 0 0 / 0.09), 0 3px 8px -2px rgb(0 0 0 / 0.05)',
+                        'xl':  '0 16px 48px -8px rgb(0 0 0 / 0.12), 0 6px 16px -4px rgb(0 0 0 / 0.06)',
+                        'nav': '0 1px 0 0 #e5e5e5',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-family: 'DM Sans', system-ui, sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px; }
+        .dark ::-webkit-scrollbar-thumb { background: #2d2d2d; }
+
+        @keyframes progress {
+            0%   { width: 0%;  left: 0; }
+            60%  { width: 80%; left: 0; }
+            100% { width: 0%;  left: 100%; }
+        }
+        .progress-bar { animation: progress 1.6s ease-in-out infinite; }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.4375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #737373;
+            letter-spacing: 0.01em;
+            transition: color 120ms ease, background 120ms ease;
+            position: relative;
+        }
+        .nav-link:hover { color: #0f0f0f; background: #f5f5f5; }
+        .dark .nav-link { color: #a3a3a3; }
+        .dark .nav-link:hover { color: #ffffff; background: #1c1c1c; }
+        .nav-link.active { color: #0284c7; background: #e0f2fe; font-weight: 600; }
+        .dark .nav-link.active { color: #38bdf8; background: rgba(2, 132, 199, 0.12); }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 2px;
+            background: #0284c7;
+            border-radius: 2px;
+        }
+        .dark .nav-link.active::after { background: #38bdf8; }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #eeeeee;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+            transition: box-shadow 180ms ease, border-color 180ms ease;
+        }
+        .card:hover { box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.07), 0 2px 4px -1px rgb(0 0 0 / 0.04); }
+        .dark .card { background: #1c1c1c; border-color: #2d2d2d; }
+
+        .field {
+            width: 100%;
+            padding: 0.6875rem 1rem;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            color: #0f0f0f;
+            transition: border-color 150ms, box-shadow 150ms;
+            outline: none;
+        }
+        .field:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgb(2 132 199 / 0.12); background: #ffffff; }
+        .field::placeholder { color: #a3a3a3; }
+        .dark .field { background: #1c1c1c; border-color: #2d2d2d; color: #fafafa; }
+        .dark .field:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgb(14 165 233 / 0.15); background: #2d2d2d; }
+
+        .label {
+            display: block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #737373;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.375rem;
+        }
+        .dark .label { color: #a3a3a3; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.625rem;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.01em;
+            transition: all 150ms ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: #ffffff;
+            box-shadow: 0 1px 2px 0 rgb(2 132 199 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.12);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            box-shadow: 0 4px 12px -2px rgb(2 132 199 / 0.40), inset 0 1px 0 rgb(255 255 255 / 0.10);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #404040;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+        }
+        .btn-secondary:hover { background: #fafafa; border-color: #d4d4d4; }
+        .dark .btn-secondary { background: #2d2d2d; color: #d4d4d4; border-color: #404040; }
+        .dark .btn-secondary:hover { background: #404040; }
+
+        .btn-ghost { background: transparent; color: #737373; }
+        .btn-ghost:hover { background: #f5f5f5; color: #0f0f0f; }
+        .dark .btn-ghost:hover { background: #1c1c1c; color: #ffffff; }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+            color: #ffffff;
+            box-shadow: 0 1px 2px 0 rgb(220 38 38 / 0.25);
+        }
+        .btn-danger:hover { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); transform: translateY(-1px); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.1875rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .table-row { border-bottom: 1px solid #eeeeee; transition: background 120ms; }
+        .dark .table-row { border-color: #2d2d2d; }
+        .table-row:hover { background: #fafafa; }
+        .dark .table-row:hover { background: rgba(45, 45, 45, 0.5); }
+
+        .th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #a3a3a3;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .td { padding: 0.875rem 1rem; font-size: 0.875rem; color: #404040; }
+        .dark .td { color: #d4d4d4; }
+
+        .dropdown {
+            background: #ffffff;
+            border: 1px solid #eeeeee;
+            border-radius: 0.875rem;
+            box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.09), 0 3px 8px -2px rgb(0 0 0 / 0.05);
+            overflow: hidden;
+        }
+        .dark .dropdown { background: #1c1c1c; border-color: #2d2d2d; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5625rem 1rem;
+            font-size: 0.8125rem;
+            color: #525252;
+            transition: background 120ms;
+            cursor: pointer;
+        }
+        .dropdown-item:hover { background: #fafafa; color: #0f0f0f; }
+        .dark .dropdown-item { color: #a3a3a3; }
+        .dark .dropdown-item:hover { background: #2d2d2d; color: #ffffff; }
+
+        .toast {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            width: 22rem;
+            padding: 1rem 1.25rem;
+            border-radius: 0.875rem;
+            border: 1px solid;
+            font-size: 0.8125rem;
+            box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.09);
+        }
+
+        .page-header-line {
+            width: 2.5rem;
+            height: 3px;
+            background: linear-gradient(90deg, #0284c7, #38bdf8);
+            border-radius: 99px;
+            margin-top: 0.625rem;
+        }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.5rem;
+            color: #737373;
+            transition: color 120ms, background 120ms;
+            cursor: pointer;
+        }
+        .icon-btn:hover { color: #0f0f0f; background: #f5f5f5; }
+        .dark .icon-btn:hover { color: #ffffff; background: #1c1c1c; }
+
+        .sep { height: 1px; background: #eeeeee; }
+        .dark .sep { background: #2d2d2d; }
+
+        .avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-family: 'Sora', system-ui, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-neutral-25 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-25 min-h-screen flex flex-col font-sans">
+
+    {% if user.is_authenticated %}
+    <header class="sticky top-0 z-50 bg-white/95 dark:bg-neutral-800/95 backdrop-blur-xl border-b border-neutral-150 dark:border-neutral-700">
+        <div class="max-w-screen-xl mx-auto px-5 sm:px-8">
+            <div class="flex items-center h-[3.75rem] gap-5">
+
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 flex-shrink-0 group">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-300 to-sky-500 flex items-center justify-center shadow-sm transition-shadow group-hover:shadow-md">
+                        <i data-lucide="layers" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <span class="text-[1.0625rem] tracking-tight text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;font-weight:700;">MyLife</span>
+                </a>
+
+                <div class="hidden md:block w-px h-5 bg-neutral-150 dark:bg-neutral-700"></div>
+
+                <nav class="hidden md:flex items-center gap-0.5 flex-1">
+                    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i data-lucide="layout-dashboard" class="w-[15px] h-[15px]"></i>Dashboard
+                    </a>
+                    <a href="{% url 'planning_index' %}" class="nav-link {% if 'planning' in request.path %}active{% endif %}">
+                        <i data-lucide="calendar" class="w-[15px] h-[15px]"></i>Planning
+                    </a>
+                    <a href="{% url 'note_list' %}" class="nav-link {% if 'notes' in request.path %}active{% endif %}">
+                        <i data-lucide="file-text" class="w-[15px] h-[15px]"></i>Notes
+                    </a>
+                    <a href="{% url 'finance_dashboard' %}" class="nav-link {% if 'finance' in request.path %}active{% endif %}">
+                        <i data-lucide="bar-chart-2" class="w-[15px] h-[15px]"></i>Finance
+                    </a>
+                    <a href="{% url 'contact_list' %}" class="nav-link {% if 'contacts' in request.path %}active{% endif %}">
+                        <i data-lucide="users" class="w-[15px] h-[15px]"></i>Contacts
+                    </a>
+                    <a href="{% url 'project_list' %}" class="nav-link {% if 'projects' in request.path %}active{% endif %}">
+                        <i data-lucide="folder" class="w-[15px] h-[15px]"></i>Projets
+                    </a>
+                    <a href="{% url 'lifestyle_dashboard' %}" class="nav-link {% if 'lifestyle' in request.path %}active{% endif %}">
+                        <i data-lucide="sparkles" class="w-[15px] h-[15px]"></i>Lifestyle
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-1 ml-auto">
+
+                    <button @click="toggleDark()" class="icon-btn">
+                        <i x-show="!dark" data-lucide="moon" class="w-4 h-4"></i>
+                        <i x-show="dark" data-lucide="sun" class="w-4 h-4" x-cloak></i>
+                    </button>
+
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="icon-btn relative">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            {% if unread_notifications_count > 0 %}
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-sky-400 rounded-full ring-2 ring-white dark:ring-neutral-800"></span>
+                            {% endif %}
+                        </button>
+
+                        <div x-show="open" @click.outside="open = false" x-cloak
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="dropdown absolute right-0 mt-2 w-[22rem]"
+                             style="transform-origin: top right;">
+
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-100 dark:border-neutral-700">
+                                <span class="text-sm font-semibold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">Notifications</span>
+                                {% if unread_notifications_count > 0 %}
+                                <span class="badge bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400">
+                                    {{ unread_notifications_count }} nouvelle{% if unread_notifications_count > 1 %}s{% endif %}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="max-h-[18rem] overflow-y-auto divide-y divide-neutral-100 dark:divide-neutral-700">
+                                {% for n in recent_notifications %}
+                                <a href="{% url 'mark_notification_read' n.id %}"
+                                   class="flex gap-3 px-4 py-3 transition-colors hover:bg-neutral-25 dark:hover:bg-neutral-700 {% if not n.is_read %}bg-sky-25{% endif %}">
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 {% if not n.is_read %}bg-sky-100 dark:bg-sky-900/30{% else %}bg-neutral-100 dark:bg-neutral-700{% endif %}">
+                                        <i data-lucide="bell" class="w-3.5 h-3.5 {% if not n.is_read %}text-sky-500{% else %}text-neutral-400{% endif %}"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs font-semibold text-neutral-900 dark:text-white truncate">{{ n.title }}</p>
+                                        <p class="text-xs text-neutral-400 mt-0.5 line-clamp-2">{{ n.message }}</p>
+                                        <p class="text-[10px] text-neutral-300 dark:text-neutral-500 mt-1">{{ n.created_at|timesince }}</p>
+                                    </div>
+                                </a>
+                                {% empty %}
+                                <div class="px-4 py-8 text-center">
+                                    <div class="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center mx-auto mb-2">
+                                        <i data-lucide="bell-off" class="w-4 h-4 text-neutral-300"></i>
+                                    </div>
+                                    <p class="text-xs text-neutral-400">Aucune notification</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="px-4 py-2.5 border-t border-neutral-100 dark:border-neutral-700">
+                                <a href="{% url 'notification_list' %}" class="text-xs font-semibold text-sky-500 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300 transition-colors">
+                                    Voir toutes les notifications
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-px h-5 bg-neutral-150 dark:bg-neutral-700 mx-1"></div>
+
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all">
+                            <div class="avatar w-7 h-7 text-[11px]">{{ user.username|first|upper }}</div>
+                            <span class="text-sm font-medium text-neutral-600 dark:text-neutral-300 hidden sm:block max-w-[96px] truncate">
+                                {{ user.get_full_name|default:user.username }}
+                            </span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-300 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                        </button>
+
+                        <div x-show="open" @click.outside="open = false" x-cloak
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="dropdown absolute right-0 mt-2 w-52"
+                             style="transform-origin: top right;">
+
+                            <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-700">
+                                <p class="text-xs font-semibold text-neutral-900 dark:text-white">{{ user.get_full_name|default:user.username }}</p>
+                                <p class="text-[11px] text-neutral-400 truncate mt-0.5">{{ user.email }}</p>
+                            </div>
+
+                            <div class="py-1">
+                                <a href="{% url 'profile' %}" class="dropdown-item">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-neutral-300"></i>Mon profil
+                                </a>
+                                <a href="{% url 'notification_settings' %}" class="dropdown-item">
+                                    <i data-lucide="settings" class="w-3.5 h-3.5 text-neutral-300"></i>Paramètres
+                                </a>
+                            </div>
+
+                            <div class="sep mx-2"></div>
+
+                            <div class="py-1">
+                                <a href="{% url 'logout' %}" class="dropdown-item text-red-500 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-900/20">
+                                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i>Déconnexion
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button @click="mobileMenu = !mobileMenu" class="md:hidden icon-btn ml-1">
+                        <i x-show="!mobileMenu" data-lucide="menu" class="w-4 h-4"></i>
+                        <i x-show="mobileMenu" data-lucide="x" class="w-4 h-4" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="mobileMenu" x-cloak
+             x-transition:enter="transition ease-out duration-150"
+             x-transition:enter-start="opacity-0 -translate-y-1"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="md:hidden border-t border-neutral-150 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-5 py-3 grid grid-cols-2 gap-1">
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i data-lucide="layout-dashboard" class="w-[15px] h-[15px]"></i>Dashboard
+            </a>
+            <a href="{% url 'planning_index' %}" class="nav-link {% if 'planning' in request.path %}active{% endif %}">
+                <i data-lucide="calendar" class="w-[15px] h-[15px]"></i>Planning
+            </a>
+            <a href="{% url 'note_list' %}" class="nav-link {% if 'notes' in request.path %}active{% endif %}">
+                <i data-lucide="file-text" class="w-[15px] h-[15px]"></i>Notes
+            </a>
+            <a href="{% url 'finance_dashboard' %}" class="nav-link {% if 'finance' in request.path %}active{% endif %}">
+                <i data-lucide="bar-chart-2" class="w-[15px] h-[15px]"></i>Finance
+            </a>
+            <a href="{% url 'contact_list' %}" class="nav-link {% if 'contacts' in request.path %}active{% endif %}">
+                <i data-lucide="users" class="w-[15px] h-[15px]"></i>Contacts
+            </a>
+            <a href="{% url 'project_list' %}" class="nav-link {% if 'projects' in request.path %}active{% endif %}">
+                <i data-lucide="folder" class="w-[15px] h-[15px]"></i>Projets
+            </a>
+            <a href="{% url 'lifestyle_dashboard' %}" class="nav-link {% if 'lifestyle' in request.path %}active{% endif %}">
+                <i data-lucide="sparkles" class="w-[15px] h-[15px]"></i>Lifestyle
+            </a>
+        </div>
+    </header>
+    {% endif %}
+
+    {% if messages %}
+    <div class="fixed top-20 right-5 z-[200] space-y-2 pointer-events-none" id="toast-container">
+        {% for message in messages %}
+        <div x-data="{ show: true }" x-show="show"
+             x-init="setTimeout(() => show = false, 4800)"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 translate-x-6 scale-95"
+             x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="toast pointer-events-auto {% if message.tags == 'success' %}bg-white border-emerald-200 dark:bg-neutral-800 dark:border-emerald-800/40{% elif message.tags == 'error' %}bg-white border-red-200 dark:bg-neutral-800 dark:border-red-800/40{% elif message.tags == 'warning' %}bg-white border-amber-200 dark:bg-neutral-800 dark:border-amber-800/40{% else %}bg-white border-sky-200 dark:bg-neutral-800 dark:border-sky-800/40{% endif %}">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 {% if message.tags == 'success' %}bg-emerald-50 dark:bg-emerald-900/20{% elif message.tags == 'error' %}bg-red-50 dark:bg-red-900/20{% elif message.tags == 'warning' %}bg-amber-50 dark:bg-amber-900/20{% else %}bg-sky-50 dark:bg-sky-900/20{% endif %}">
+                <i data-lucide="{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}alert-circle{% elif message.tags == 'warning' %}alert-triangle{% else %}info{% endif %}" class="w-4 h-4 {% if message.tags == 'success' %}text-emerald-500{% elif message.tags == 'error' %}text-red-500{% elif message.tags == 'warning' %}text-amber-500{% else %}text-sky-500{% endif %}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-neutral-900 dark:text-white leading-snug">{{ message }}</p>
+            </div>
+            <button @click="show = false" class="icon-btn w-6 h-6 flex-shrink-0 -mr-1">
+                <i data-lucide="x" class="w-3 h-3"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div x-show="loading" class="fixed top-0 left-0 w-full h-0.5 z-[300] overflow-hidden bg-sky-100 dark:bg-sky-900/30">
+        <div class="progress-bar h-full bg-gradient-to-r from-sky-400 to-sky-600 absolute"></div>
+    </div>
+
+    <main class="flex-1 w-full max-w-screen-xl mx-auto px-5 sm:px-8 py-9"
+          :class="{ 'opacity-40 pointer-events-none select-none': loading }">
+        {% if user.is_authenticated %}
+
+        {% block page_header %}
+        <div class="mb-9">
+            <h1 class="text-[1.625rem] font-bold tracking-tight text-neutral-900 dark:text-white leading-tight" style="font-family:'Sora',system-ui,sans-serif;">
+                {% block page_title %}{% endblock %}
+            </h1>
+            <p class="mt-1.5 text-sm text-neutral-400 dark:text-neutral-500 leading-relaxed">
+                {% block page_subtitle %}{% endblock %}
+            </p>
+            <div class="page-header-line"></div>
+        </div>
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+
+        {% else %}
+        {% block auth_content %}{% endblock %}
+        {% endif %}
+    </main>
+
+    {% if user.is_authenticated %}
+    <footer class="border-t border-neutral-150 dark:border-neutral-700 bg-white dark:bg-neutral-800 mt-auto">
+        <div class="max-w-screen-xl mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded-md bg-gradient-to-br from-sky-300 to-sky-500 flex items-center justify-center">
+                    <i data-lucide="layers" class="w-3 h-3 text-white"></i>
+                </div>
+                <span class="text-sm font-bold text-neutral-700 dark:text-neutral-300 tracking-tight" style="font-family:'Sora',system-ui,sans-serif;">MyLife</span>
+            </div>
+            <p class="text-xs text-neutral-300 dark:text-neutral-600 order-last sm:order-none">&copy; 2026 MyLife &mdash; Tous droits réservés.</p>
+            <nav class="flex items-center gap-5 text-xs">
+                <a href="{% url 'dashboard' %}" class="text-neutral-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors font-medium">Dashboard</a>
+                <a href="{% url 'planning_index' %}" class="text-neutral-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors font-medium">Planning</a>
+                <a href="{% url 'finance_dashboard' %}" class="text-neutral-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors font-medium">Finance</a>
+            </nav>
+        </div>
+    </footer>
+    {% endif %}
+
+    <script>
+        function appState() {
+            return {
+                dark: localStorage.getItem('ml-theme') === 'dark',
+                mobileMenu: false,
+                loading: false,
+                init() {
+                    this.$watch('dark', val => {
+                        localStorage.setItem('ml-theme', val ? 'dark' : 'light');
+                    });
+                    this.$nextTick(() => lucide.createIcons());
+                    window.addEventListener('beforeunload', () => this.loading = true);
+                },
+                toggleDark() {
+                    this.dark = !this.dark;
+                    this.$nextTick(() => lucide.createIcons());
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

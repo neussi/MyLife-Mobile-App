@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | MyLife{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Personnalisez votre organisation financière.{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto"
+    x-data="{ color: '{{ form.color.value|default:'#6366f1' }}', type: '{{ form.type.value|default:'EXPENSE' }}' }">
+    <!-- Header Card -->
+    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg transition-all duration-300"
+        :style="{ backgroundColor: color + '22', borderColor: color + '44' }" style="border-width: 1px;">
+        <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-2xl opacity-20"
+            :style="{ backgroundColor: color }"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md"
+                :style="{ backgroundColor: color + '33', color: color }">
+                <i data-lucide="tag" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-white"
+                    style="font-family:'Sora',system-ui,sans-serif;">Identité Visuelle</h2>
+                <p class="text-neutral-500 dark:text-neutral-400 text-xs">Configurez l'apparence de votre catégorie.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
+        <!-- Decoration indicator -->
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"
+            :style="{ backgroundColor: color }"></div>
+
+        <form method="post" class="space-y-6 relative z-10">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="type" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Nom de la catégorie
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Type Selector -->
+            <div class="space-y-1.5">
+                <label class="label flex items-center gap-2">
+                    <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-500"></i>
+                    Type de catégorie
+                </label>
+                <div class="flex p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="type" value="EXPENSE" x-model="type" class="sr-only">
+                        <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
+                            :class="type === 'EXPENSE' ? 'bg-white dark:bg-surface-700 text-red-600 shadow-sm' : 'text-neutral-500'">
+                            Dépense
+                        </div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="type" value="INCOME" x-model="type" class="sr-only">
+                        <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
+                            :class="type === 'INCOME' ? 'bg-white dark:bg-surface-700 text-emerald-600 shadow-sm' : 'text-neutral-500'">
+                            Revenu
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Color -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="palette" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Couleur
+                    </label>
+                    <div class="relative">
+                        {{ form.color }}
+                        <i data-lucide="palette"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                    </div>
+                    {% if form.color.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.color.errors.0
+                        }}</p>{% endif %}
+                </div>
+
+                <!-- Icon -->
+                <div class="space-y-1.5">
+                    <label class="label flex items-center gap-2">
+                        <i data-lucide="smile" class="w-3.5 h-3.5 text-sky-500"></i>
+                        Icône (Nom Lucide)
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="tag"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                        {{ form.icon }}
+                    </div>
+                    {% if form.icon.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.icon.errors.0 }}
+                    </p>{% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
+                <a href="{% url 'category_list' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary px-8">
+                    {% if form.instance.pk %}Sauvegarder{% else %}Créer la catégorie{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+        <h4
+            class="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            Conseil Premium
+        </h4>
+        <p class="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
+            Utilisez des couleurs distinctes pour chaque catégorie afin de rendre vos graphiques financiers plus
+            lisibles en un clin d'œil.
+        </p>
+    </div>
+</div>
+
+<style>
+    .field,
+    select.field,
+    textarea.field,
+    input[type="text"].field {
+        width: 100%;
+        background-color: #f9fafb;
+        /* neutral-50 */
+        border: 1px solid #e5e7eb;
+        /* neutral-200 */
+        border-radius: 0.75rem;
+        /* rounded-xl */
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        /* text-sm */
+        transition: all 0.2s;
+    }
+
+    .dark .field,
+    .dark select.field,
+    .dark textarea.field {
+        background-color: #171717;
+        /* neutral-900 */
+        border-color: #262626;
+        /* neutral-800 */
+        color: white;
+    }
+
+    .field:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+        /* sky-500/20 */
+        border-color: #0ea5e9;
+        /* sky-500 */
+    }
+
+    input[type="color"].field {
+        height: 46px;
+        padding: 0.25rem;
+        cursor: pointer;
+    }
+
+    .pl-11 {
+        padding-left: 2.75rem !important;
+    }
+</style>
+{% endblock %}
