@@ -50,8 +50,12 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_SSL_REDIRECT = False # Set to True if using SSL/HTTPS
+    SECURE_SSL_REDIRECT = True # We are enforcing HTTPS now
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_TRUSTED_ORIGINS = ['https://mylife.boutik237.com', 'http://167.86.88.92:54321']
     X_FRAME_OPTIONS = 'DENY'
+else:
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

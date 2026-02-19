@@ -30,8 +30,11 @@ jobs:
           docker-compose up -d --build
           docker image prune -f
           
-          # Apache Reverse Proxy Setup
+          # Apache Reverse Proxy & SSL Setup
+          apt-get update && apt-get install -y certbot python3-certbot-apache
           cp mylife.conf /etc/apache2/sites-available/
           a2ensite mylife.conf
-          a2enmod proxy proxy_http
+          a2enmod proxy proxy_http ssl
+          # Run certbot (non-interactive, agree to tos, provide email)
+          certbot --apache -d mylife.boutik237.com --non-interactive --agree-tos -m npe.techs@gmail.com
           apache2ctl configtest && systemctl restart apache2
