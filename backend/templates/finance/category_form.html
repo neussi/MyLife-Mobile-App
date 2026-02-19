@@ -1,171 +1,88 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ title }} | MyLife{% endblock %}
-{% block page_title %}{{ title }}{% endblock %}
-{% block page_subtitle %}Personnalisez votre organisation financière.{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
-<div class="max-w-xl mx-auto"
-    x-data="{ color: '{{ form.color.value|default:'#6366f1' }}', type: '{{ form.type.value|default:'EXPENSE' }}' }">
-    <!-- Header Card -->
-    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg transition-all duration-300"
-        :style="{ backgroundColor: color + '22', borderColor: color + '44' }" style="border-width: 1px;">
-        <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-2xl opacity-20"
-            :style="{ backgroundColor: color }"></div>
-        <div class="relative z-10 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md"
-                :style="{ backgroundColor: color + '33', color: color }">
-                <i data-lucide="tag" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-neutral-900 dark:text-white"
-                    style="font-family:'Sora',system-ui,sans-serif;">Identité Visuelle</h2>
-                <p class="text-neutral-500 dark:text-neutral-400 text-xs">Configurez l'apparence de votre catégorie.</p>
-            </div>
-        </div>
+<div class="max-w-2xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="flex items-center gap-2 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+            <a href="{% url 'finance_dashboard' %}" class="hover:text-emerald-500 transition-colors">Finance</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-neutral-900 dark:text-white">Catégories</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight"
+            style="font-family:'Sora',sans-serif;">
+            {% if form.instance.pk %}Modifier la catégorie{% else %}Nouvelle Catégorie{% endif %}
+        </h1>
     </div>
 
-    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
-        <!-- Decoration indicator -->
-        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"
-            :style="{ backgroundColor: color }"></div>
+    <div class="card overflow-hidden relative">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
 
-        <form method="post" class="space-y-6 relative z-10">
+        <form method="post" class="p-8 space-y-8">
             {% csrf_token %}
 
-            <!-- Name -->
-            <div class="space-y-1.5">
-                <label class="label flex items-center gap-2">
-                    <i data-lucide="type" class="w-3.5 h-3.5 text-sky-500"></i>
-                    Nom de la catégorie
-                </label>
-                {{ form.name }}
-                {% if form.name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.name.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <!-- Type Selector -->
-            <div class="space-y-1.5">
-                <label class="label flex items-center gap-2">
-                    <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-500"></i>
-                    Type de catégorie
-                </label>
-                <div class="flex p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="type" value="EXPENSE" x-model="type" class="sr-only">
-                        <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
-                            :class="type === 'EXPENSE' ? 'bg-white dark:bg-surface-700 text-red-600 shadow-sm' : 'text-neutral-500'">
-                            Dépense
-                        </div>
-                    </label>
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="type" value="INCOME" x-model="type" class="sr-only">
-                        <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
-                            :class="type === 'INCOME' ? 'bg-white dark:bg-surface-700 text-emerald-600 shadow-sm' : 'text-neutral-500'">
-                            Revenu
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <!-- Color -->
-                <div class="space-y-1.5">
-                    <label class="label flex items-center gap-2">
-                        <i data-lucide="palette" class="w-3.5 h-3.5 text-sky-500"></i>
-                        Couleur
-                    </label>
+            <div class="space-y-6">
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label class="label">Nom de la catégorie</label>
                     <div class="relative">
-                        {{ form.color }}
-                        <i data-lucide="palette"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                        <i data-lucide="type"
+                            class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                        {{ form.name }}
                     </div>
-                    {% if form.color.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.color.errors.0
-                        }}</p>{% endif %}
+                </div>
+
+                <!-- Color -->
+                <div class="space-y-2">
+                    <label class="label">Couleur d'identification</label>
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1">
+                            {{ form.color }}
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400">
+                            <i data-lucide="palette" class="w-5 h-5"></i>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Icon -->
-                <div class="space-y-1.5">
-                    <label class="label flex items-center gap-2">
-                        <i data-lucide="smile" class="w-3.5 h-3.5 text-sky-500"></i>
-                        Icône (Nom Lucide)
-                    </label>
+                <div class="space-y-2">
+                    <label class="label">Icône (Nom Lucide)</label>
                     <div class="relative">
-                        <i data-lucide="tag"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                        <i data-lucide="image"
+                            class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
                         {{ form.icon }}
                     </div>
-                    {% if form.icon.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.icon.errors.0 }}
-                    </p>{% endif %}
+                    <p class="text-[10px] text-neutral-400">Ex: wallet, shopping-cart, home, coffee...</p>
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
-                <a href="{% url 'category_list' %}" class="btn btn-secondary">Annuler</a>
-                <button type="submit" class="btn btn-primary px-8">
-                    {% if form.instance.pk %}Sauvegarder{% else %}Créer la catégorie{% endif %}
+            <!-- Actions -->
+            <div class="pt-8 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-end gap-3">
+                <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary px-6">Annuler</a>
+                <button type="submit"
+                    class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 px-8 shadow-lg shadow-emerald-500/20">
+                    Enregistrer la catégorie
                 </button>
             </div>
         </form>
     </div>
-
-    <div class="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900/30">
-        <h4
-            class="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-widest mb-3 flex items-center gap-2">
-            <i data-lucide="info" class="w-3.5 h-3.5"></i>
-            Conseil Premium
-        </h4>
-        <p class="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
-            Utilisez des couleurs distinctes pour chaque catégorie afin de rendre vos graphiques financiers plus
-            lisibles en un clin d'œil.
-        </p>
-    </div>
 </div>
 
 <style>
-    .field,
-    select.field,
-    textarea.field,
-    input[type="text"].field {
-        width: 100%;
-        background-color: #f9fafb;
-        /* neutral-50 */
-        border: 1px solid #e5e7eb;
-        /* neutral-200 */
-        border-radius: 0.75rem;
-        /* rounded-xl */
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        /* text-sm */
-        transition: all 0.2s;
-    }
-
-    .dark .field,
-    .dark select.field,
-    .dark textarea.field {
-        background-color: #171717;
-        /* neutral-900 */
-        border-color: #262626;
-        /* neutral-800 */
-        color: white;
-    }
-
-    .field:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
-        /* sky-500/20 */
-        border-color: #0ea5e9;
-        /* sky-500 */
-    }
-
-    input[type="color"].field {
-        height: 46px;
-        padding: 0.25rem;
-        cursor: pointer;
-    }
-
-    .pl-11 {
+    input[type="text"],
+    select {
+        @apply field !important;
         padding-left: 2.75rem !important;
+    }
+
+    input[type="color"] {
+        @apply w-full h-12 p-1 rounded-xl cursor-pointer border-1.5 border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 transition-all !important;
     }
 </style>
 {% endblock %}

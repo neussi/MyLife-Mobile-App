@@ -1,87 +1,101 @@
 {% extends 'base.html' %}
 
-{% block title %}Contacts | MyLife{% endblock %}
-{% block page_title %}Contacts{% endblock %}
-{% block page_subtitle %}Gérez votre réseau et vos relations.{% endblock %}
+{% block title %}Mes Contacts | MyLife{% endblock %}
+{% block page_title %}Carnet d'adresses{% endblock %}
+{% block page_subtitle %}Gérez votre réseau et vos relations avec élégance.{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
 
-    <!-- ── Barre d'actions ───────────────────────────────────── -->
-    <div class="flex flex-wrap items-center justify-between gap-4">
-        <form method="get" class="flex flex-1 max-w-xl">
-            <div class="relative flex-1">
-                <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
-                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Rechercher un contact..."
-                    class="field pl-10 bg-white dark:bg-surface-900 border-surface-200 rounded-r-none">
+    <!-- ── Barre d'actions Premium ───────────────────────────────────── -->
+    <div
+        class="flex flex-col md:flex-row items-center justify-between gap-5 bg-white/50 dark:bg-neutral-800/50 backdrop-blur-md p-4 rounded-2xl border border-neutral-100 dark:border-neutral-700 shadow-sm">
+        <form method="get" class="flex flex-1 w-full max-w-2xl relative group">
+            <div
+                class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-sky-500 transition-colors">
+                <i data-lucide="search" class="w-4 h-4"></i>
             </div>
-            <button type="submit" class="btn-primary rounded-l-none border-l-0 px-4">
-                Rechercher
+            <input type="text" name="q" value="{{ query|default:'' }}"
+                placeholder="Rechercher par nom, email, entreprise..."
+                class="field pl-11 h-12 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 shadow-none focus:ring-4 focus:ring-sky-500/10">
+            <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-primary h-8 px-4 text-xs">
+                Filtrer
             </button>
         </form>
 
-        <a href="{% url 'contact_create' %}" class="btn-primary">
+        <a href="{% url 'contact_create' %}"
+            class="btn btn-primary h-12 px-6 shadow-lg shadow-sky-500/20 whitespace-nowrap w-full md:w-auto">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
-            Nouveau contact
+            Nouveau Contact
         </a>
     </div>
 
-    <!-- ── Grille de contacts ─────────────────────────────────── -->
+    <!-- ── Contacts Grid ─────────────────────────────────── -->
     {% if contacts %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for contact in contacts %}
-        <div class="card p-6 group hover:shadow-card-hover transition-all flex flex-col">
-            <div class="flex items-center gap-4 mb-6">
-                {% if contact.avatar %}
-                <img src="{{ contact.avatar.url }}" alt="{{ contact.first_name }}"
-                    class="w-14 h-14 rounded-2xl object-cover ring-2 ring-surface-50 dark:ring-surface-800">
-                {% else %}
-                <div
-                    class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-xl">
-                    {{ contact.first_name|first|upper }}{{ contact.last_name|first|upper }}
-                </div>
-                {% endif %}
-                <div class="min-w-0">
-                    <h3 class="text-sm font-bold text-surface-900 dark:text-white truncate">{{ contact.first_name }} {{
-                        contact.last_name }}</h3>
-                    <p class="text-[11px] text-surface-400 truncate mt-0.5">{{ contact.job_title|default:"Contact" }}
-                    </p>
-                </div>
-            </div>
+        <div
+            class="group relative bg-white dark:bg-neutral-800 rounded-[2rem] border border-neutral-100 dark:border-neutral-700 p-6 hover:border-sky-200 dark:hover:border-sky-800/40 hover:shadow-xl transition-all duration-300">
 
-            <div class="space-y-3 mb-6 flex-1">
-                {% if contact.email %}
-                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
-                    <i data-lucide="mail" class="w-3.5 h-3.5 text-surface-400"></i>
-                    <span class="truncate">{{ contact.email }}</span>
-                </div>
-                {% endif %}
-                {% if contact.phone %}
-                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
-                    <i data-lucide="phone" class="w-3.5 h-3.5 text-surface-400"></i>
-                    <span>{{ contact.phone }}</span>
-                </div>
-                {% endif %}
-                {% if contact.company %}
-                <div class="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400">
-                    <i data-lucide="building" class="w-3.5 h-3.5 text-surface-400"></i>
-                    <span class="truncate">{{ contact.company }}</span>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="flex items-center gap-2 pt-4 border-t border-surface-100 dark:border-surface-800">
-                <a href="{% url 'contact_detail' contact.id %}"
-                    class="flex-1 btn-secondary justify-center py-2 text-xs">
-                    Détails
-                </a>
+            <!-- Quick Actions Floating -->
+            <div
+                class="absolute top-4 right-4 flex gap-1.5 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                 <a href="{% url 'contact_edit' contact.id %}"
-                    class="p-2 rounded-lg text-surface-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all">
+                    class="w-8 h-8 rounded-xl bg-white/90 dark:bg-neutral-700/90 backdrop-blur shadow-sm flex items-center justify-center text-neutral-400 hover:text-sky-500 transition-colors">
                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                 </a>
                 <a href="{% url 'contact_delete' contact.id %}"
-                    class="p-2 rounded-lg text-surface-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                    class="w-8 h-8 rounded-xl bg-white/90 dark:bg-neutral-700/90 backdrop-blur shadow-sm flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+
+            <div class="flex flex-col items-center text-center">
+                <!-- Avatar Section -->
+                <div class="relative mb-4">
+                    {% if contact.avatar %}
+                    <img src="{{ contact.avatar.url }}" alt="{{ contact.first_name }}"
+                        class="w-20 h-20 rounded-[1.75rem] object-cover ring-4 ring-neutral-50 dark:ring-neutral-700 shadow-md group-hover:ring-sky-50 dark:group-hover:ring-sky-900/20 transition-all">
+                    {% else %}
+                    <div
+                        class="w-20 h-20 rounded-[1.75rem] bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-sky-500/10">
+                        {{ contact.first_name|first|upper }}{{ contact.last_name|first|upper }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Relationship Badge -->
+                    <span
+                        class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-lg bg-white dark:bg-neutral-700 text-[10px] font-bold uppercase tracking-wider shadow-sm border border-neutral-100 dark:border-neutral-600">
+                        {{ contact.get_relationship_type_display|default:"Contact" }}
+                    </span>
+                </div>
+
+                <h3 class="text-base font-bold text-neutral-900 dark:text-white mb-0.5 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors"
+                    style="font-family:'Sora',sans-serif;">
+                    {{ contact.first_name }} {{ contact.last_name }}
+                </h3>
+                <p class="text-[11px] text-neutral-400 font-medium truncate max-w-full italic mb-5">
+                    {{ contact.company|default:"Particulier" }}
+                </p>
+
+                <div class="w-full space-y-3 pt-4 border-t border-neutral-50 dark:border-neutral-700/50">
+                    {% if contact.email %}
+                    <div class="flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+                        <i data-lucide="mail" class="w-3 h-3 text-sky-500/60"></i>
+                        <span class="truncate">{{ contact.email }}</span>
+                    </div>
+                    {% endif %}
+                    {% if contact.phone_number %}
+                    <div class="flex items-center justify-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+                        <i data-lucide="phone" class="w-3 h-3 text-emerald-500/60"></i>
+                        <span>{{ contact.phone_number }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'contact_detail' contact.id %}"
+                    class="mt-6 w-full py-2.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/40 text-[11px] font-bold text-neutral-600 dark:text-neutral-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-600 transition-all">
+                    Fiche détaillée
                 </a>
             </div>
         </div>
@@ -89,15 +103,17 @@
     </div>
     {% else %}
     <div class="card p-20 flex flex-col items-center justify-center text-center">
-        <div class="w-16 h-16 bg-surface-50 dark:bg-surface-800 rounded-2xl flex items-center justify-center mb-4">
-            <i data-lucide="users" class="w-8 h-8 text-surface-200"></i>
+        <div class="w-20 h-20 bg-sky-50 dark:bg-sky-900/20 rounded-[2rem] flex items-center justify-center mb-6">
+            <i data-lucide="users" class="w-10 h-10 text-sky-300"></i>
         </div>
-        <h3 class="text-lg font-bold text-surface-900 dark:text-white">Aucun contact</h3>
-        <p class="text-sm text-surface-500 max-w-xs mx-auto mt-2">
-            Ajoutez votre premier contact pour commencer à organiser votre carnet d'adresses.
+        <h3 class="text-xl font-bold text-neutral-900 dark:text-white" style="font-family:'Sora',sans-serif;">Votre
+            carnet est vide</h3>
+        <p class="text-sm text-neutral-500 max-w-xs mx-auto mt-3 leading-relaxed">
+            Centralisez tous vos contacts au même endroit pour une gestion intelligente de votre réseau.
         </p>
-        <a href="{% url 'contact_create' %}" class="btn-primary mt-6">
-            Ajouter un contact
+        <a href="{% url 'contact_create' %}" class="btn btn-primary mt-8 px-8 h-12 shadow-lg shadow-sky-500/20">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Ajouter mon premier contact
         </a>
     </div>
     {% endif %}

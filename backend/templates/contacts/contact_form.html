@@ -1,192 +1,236 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ title }} | MyLife{% endblock %}
-{% block page_title %}{{ title }}{% endblock %}
-{% block page_subtitle %}Gérez vos relations professionnelles et personnelles avec soin.{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto" x-data="contactFormHandler()">
-    <!-- Header Card -->
-    <div
-        class="card mb-6 p-6 bg-gradient-to-br from-brand-600 to-brand-700 text-white border-none shadow-lg shadow-brand-500/20 overflow-hidden relative">
-        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="relative z-10 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                <i data-lucide="user-plus" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Identité du Contact</h2>
-                <p class="text-brand-100 text-xs">Remplissez les informations de votre relation.</p>
-            </div>
+<div class="max-w-5xl mx-auto" x-data="contactFormHandler()">
+
+    <!-- Header Hero -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <nav class="flex items-center gap-2 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+                <a href="{% url 'contact_list' %}" class="hover:text-sky-500 transition-colors">Contacts</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-neutral-900 dark:text-white">{{ title }}</span>
+            </nav>
+            <h1 class="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight"
+                style="font-family:'Sora',sans-serif;">
+                {{ title }}
+            </h1>
+            <p class="mt-2 text-sm text-neutral-500 max-w-md">
+                Cultivez vos relations avec élégance. Chaque détail compte pour bâtir un réseau solide.
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{% url 'contact_list' %}" class="btn btn-secondary px-6">Annuler</a>
+            <button type="submit" form="main-contact-form" class="btn btn-primary px-8 shadow-lg shadow-sky-500/20">
+                {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer le contact{% endif %}
+            </button>
         </div>
     </div>
 
-    <div
-        class="card p-8 sm:p-10 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
-        <!-- Decoration -->
-        <div
-            class="absolute top-0 right-0 w-32 h-32 bg-brand-50 dark:bg-brand-900/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none">
-        </div>
+    <form id="main-contact-form" method="post" enctype="multipart/form-data"
+        class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {% csrf_token %}
 
-        <form method="post" enctype="multipart/form-data" class="space-y-8 relative z-10">
-            {% csrf_token %}
+        <!-- Left Column: Avatar & Quick Info -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="card p-8 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
 
-            <!-- Avatar Upload Section -->
-            <div class="flex flex-col items-center gap-6 mb-4">
-                <div class="relative group">
-                    <template x-if="avatarPreview">
-                        <img :src="avatarPreview"
-                            class="w-28 h-28 rounded-3xl object-cover ring-4 ring-brand-500/10 shadow-lg transition-transform group-hover:scale-105">
-                    </template>
-                    <template x-if="!avatarPreview">
-                        <div
-                            class="w-28 h-28 rounded-3xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 dark:text-neutral-600 font-bold text-3xl">
-                            <i data-lucide="user" class="w-12 h-12 opacity-50"></i>
-                        </div>
-                    </template>
+                <div class="relative group mb-6">
+                    <div
+                        class="w-40 h-40 rounded-[2.5rem] overflow-hidden ring-8 ring-neutral-50 dark:ring-neutral-800/50 shadow-2xl transition-all group-hover:ring-indigo-50 dark:group-hover:ring-indigo-900/20">
+                        <template x-if="avatarPreview">
+                            <img :src="avatarPreview" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!avatarPreview">
+                            <div
+                                class="w-full h-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-300 dark:text-neutral-600">
+                                <i data-lucide="user" class="w-16 h-16 opacity-20"></i>
+                            </div>
+                        </template>
+                    </div>
                     <label
-                        class="absolute -bottom-2 -right-2 p-2.5 bg-brand-600 text-white rounded-xl shadow-lg cursor-pointer hover:bg-brand-700 transition-all hover:scale-110 active:scale-95">
-                        <i data-lucide="camera" class="w-4 h-4"></i>
+                        class="absolute -bottom-2 -right-2 w-12 h-12 bg-indigo-600 text-white rounded-2xl shadow-xl cursor-pointer hover:bg-indigo-700 transition-all hover:scale-110 active:scale-95 border-4 border-white dark:border-neutral-900 flex items-center justify-center">
+                        <i data-lucide="camera" class="w-5 h-5"></i>
                         <input type="file" name="avatar" @change="previewAvatar($event)" class="hidden">
                     </label>
                 </div>
-                <p class="text-[10px] text-surface-400 uppercase font-bold tracking-widest">Photo du contact</p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Identité -->
-                <div class="space-y-5">
-                    <h3
-                        class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest border-l-4 border-brand-600 pl-3 mb-6">
-                        Identité</h3>
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-1"
+                    style="font-family:'Sora',sans-serif;">
+                    <span x-text="fullName || 'Nouveau Contact'"></span>
+                </h3>
+                <p class="text-xs text-neutral-400 font-medium uppercase tracking-widest"
+                    x-text="company || 'Particulier'"></p>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="label">Prénom</label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
-                                form.first_name.errors.0 }}</p>{% endif %}
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="label">Nom</label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
-                                form.last_name.errors.0 }}</p>{% endif %}
-                        </div>
-                    </div>
+                <div class="w-full border-t border-neutral-100 dark:border-neutral-800 my-6"></div>
 
-                    <div class="space-y-1.5">
-                        <label class="label">Entreprise / Organisation</label>
-                        {{ form.company }}
-                    </div>
-
-                    <div class="space-y-1.5">
+                <div class="w-full space-y-4">
+                    <div class="space-y-1.5 text-left">
                         <label class="label">Type de relation</label>
                         <div class="relative">
                             {{ form.relationship_type }}
-                            <i data-lucide="chevron-down"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Coordonnées -->
-                <div class="space-y-5">
-                    <h3
-                        class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest border-l-4 border-brand-600 pl-3 mb-6">
-                        Coordonnées</h3>
+            <!-- Smart Tips Card -->
+            <div
+                class="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl text-white shadow-xl shadow-indigo-500/10">
+                <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-indigo-100"></i>
+                </div>
+                <h4 class="font-bold text-base mb-2" style="font-family:'Sora',sans-serif;">Conseil Pro</h4>
+                <p class="text-xs text-indigo-100 leading-relaxed opacity-90">
+                    N'oubliez pas d'ajouter l'anniversaire ! Un simple message ce jour-là renforce considérablement vos
+                    liens professionnels et personnels.
+                </p>
+            </div>
+        </div>
 
-                    <div class="space-y-1.5">
-                        <label class="label">Email</label>
+        <!-- Right Column: Form Fields -->
+        <div class="lg:col-span-8 space-y-8">
+
+            <!-- Section: Identité -->
+            <div class="card p-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500">
+                        <i data-lucide="user-check" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-neutral-900 dark:text-white uppercase tracking-widest"
+                        style="font-family:'Sora',sans-serif;">Informations Personnelles</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="label">Prénom</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}<p class="text-[11px] text-red-500 font-medium">{{
+                            form.first_name.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div class="space-y-2">
+                        <label class="label">Nom de famille</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}<p class="text-[11px] text-red-500 font-medium">{{
+                            form.last_name.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="label">Entreprise / Organisation</label>
+                        <div class="relative">
+                            <i data-lucide="briefcase"
+                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                            {{ form.company }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Coordonnées -->
+            <div class="card p-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center text-violet-500">
+                        <i data-lucide="at-sign" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-neutral-900 dark:text-white uppercase tracking-widest"
+                        style="font-family:'Sora',sans-serif;">Coordonnées & Contact</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="label">Email Personnel/Pro</label>
                         <div class="relative">
                             <i data-lucide="mail"
-                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
                             {{ form.email }}
                         </div>
                     </div>
-
-                    <div class="space-y-1.5">
-                        <label class="label">Téléphone</label>
+                    <div class="space-y-2">
+                        <label class="label">Numéro de Téléphone</label>
                         <div class="relative">
                             <i data-lucide="phone"
-                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
+                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
                             {{ form.phone_number }}
                         </div>
                     </div>
-
-                    <div class="space-y-1.5">
-                        <label class="label">Anniversaire</label>
-                        {{ form.birthday }}
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="label">Adresse / Localisation</label>
+                        <div class="relative">
+                            <i data-lucide="map-pin"
+                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                            {{ form.address }}
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 space-y-2 text-indigo-600">
+                        <label class="label">Date d'Anniversaire</label>
+                        <div class="relative">
+                            <i data-lucide="cake"
+                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                            {{ form.birthday }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-1.5 pt-4">
-                <label class="label">Adresse / Localisation</label>
-                {{ form.address }}
+            <!-- Section: Notes -->
+            <div class="card p-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500">
+                        <i data-lucide="file-edit" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-neutral-900 dark:text-white uppercase tracking-widest"
+                        style="font-family:'Sora',sans-serif;">Contextes & Notes</h3>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="label">Commentaires & Détails Importants</label>
+                    {{ form.notes }}
+                    <p class="text-[10px] text-neutral-400 mt-2 italic">Détails sur la première rencontre, centres
+                        d'intérêt, projets communs...</p>
+                </div>
             </div>
 
-            <div class="space-y-1.5">
-                <label class="label">Notes / Commentaires</label>
-                {{ form.notes }}
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-8 border-t border-surface-100 dark:border-surface-800">
-                <a href="{% url 'contact_list' %}" class="btn btn-secondary">Annuler</a>
-                <button type="submit" class="btn btn-primary px-8">
-                    {% if form.instance.pk %}Enregistrer les modifications{% else %}Créer le contact{% endif %}
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <style>
-    .field,
-    select.field,
-    textarea.field,
-    input[type="text"].field,
-    input[type="email"].field,
-    input[type="date"].field {
-        width: 100%;
-        background-color: #f9fafb;
-        /* neutral-50 */
-        border: 1px solid #e5e7eb;
-        /* neutral-200 */
-        border-radius: 0.75rem;
-        /* rounded-xl */
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        /* text-sm */
-        transition: all 0.2s;
-    }
-
-    .dark .field,
-    .dark select.field,
-    .dark textarea.field {
-        background-color: #171717;
-        /* neutral-900 */
-        border-color: #262626;
-        /* neutral-800 */
-        color: white;
-    }
-
-    .field:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
-        border-color: #0ea5e9;
-    }
-
-    .pl-11 {
+    /* Visibility improvements and premium styling overrides */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    textarea,
+    select {
+        @apply field !important;
         padding-left: 2.75rem !important;
     }
 
-    select {
-        appearance: none;
+    input[name="first_name"],
+    input[name="last_name"],
+    textarea {
+        padding-left: 1rem !important;
     }
 
-    textarea.resize-none {
-        resize: none;
+    select {
+        @apply appearance-none cursor-pointer;
+    }
+
+    textarea {
+        @apply min-h-[160px] leading-relaxed !important;
+    }
+
+    .card {
+        @apply border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-md transition-shadow;
     }
 </style>
 {% endblock %}
@@ -196,15 +240,35 @@
     function contactFormHandler() {
         return {
             avatarPreview: '{% if form.instance.avatar %}{{ form.instance.avatar.url }}{% endif %}',
+            firstName: '{% if form.instance.pk %}{{ form.instance.first_name }}{% endif %}',
+            lastName: '{% if form.instance.pk %}{{ form.instance.last_name }}{% endif %}',
+            company: '{% if form.instance.pk %}{{ form.instance.company }}{% endif %}',
+
+            get fullName() {
+                if (this.firstName || this.lastName) {
+                    return `${this.firstName} ${this.lastName}`.trim();
+                }
+                return '';
+            },
+
+            init() {
+                // Binding inputs to local state for live feedback
+                const fName = document.querySelector('input[name="first_name"]');
+                const lName = document.querySelector('input[name="last_name"]');
+                const comp = document.querySelector('input[name="company"]');
+
+                if (fName) fName.addEventListener('input', (e) => this.firstName = e.target.value);
+                if (lName) lName.addEventListener('input', (e) => this.lastName = e.target.value);
+                if (comp) comp.addEventListener('input', (e) => this.company = e.target.value);
+            },
+
             previewAvatar(e) {
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     this.avatarPreview = ev.target.result;
-                    this.$nextTick(() => {
-                        lucide.createIcons();
-                    });
+                    this.$nextTick(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); });
                 }
                 reader.readAsDataURL(file);
             }

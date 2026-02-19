@@ -230,37 +230,40 @@
 
         .field {
             width: 100%;
-            padding: 0.6875rem 1rem;
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 0.625rem;
+            padding: 0.8125rem 1.125rem;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.875rem;
             font-size: 0.875rem;
             font-family: inherit;
-            color: #0f0f0f;
-            transition: border-color 150ms, box-shadow 150ms;
+            color: #0f172a;
+            transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02);
         }
 
         .field:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgb(2 132 199 / 0.12);
             background: #ffffff;
+            border-color: #0ea5e9;
+            box-shadow: 0 8px 16px -4px rgb(14 165 233 / 0.15), 0 0 0 4px rgb(14 165 233 / 0.1);
+            transform: translateY(-1px);
         }
 
         .field::placeholder {
-            color: #a3a3a3;
+            color: #94a3b8;
         }
 
         .dark .field {
-            background: #1c1c1c;
-            border-color: #2d2d2d;
-            color: #fafafa;
+            background: #262626;
+            border-color: #404040;
+            color: #f1f5f9;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
         }
 
         .dark .field:focus {
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgb(14 165 233 / 0.15);
             background: #2d2d2d;
+            border-color: #38bdf8;
+            box-shadow: 0 8px 16px -4px rgb(56 189 248 / 0.2), 0 0 0 4px rgb(56 189 248 / 0.1);
         }
 
         .label {
@@ -595,7 +598,8 @@
                                     style="font-family:'Sora',system-ui,sans-serif;">Notifications</span>
                                 {% if unread_notifications_count > 0 %}
                                 <span class="badge bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400">
-                                    {{ unread_notifications_count }} nouvelle{% if unread_notifications_count > 1 %}s{% endif %}
+                                    {{ unread_notifications_count }} nouvelle{% if unread_notifications_count > 1 %}s{%
+                                    endif %}
                                 </span>
                                 {% endif %}
                             </div>
@@ -725,6 +729,7 @@
         </div>
     </header>
     {% endif %}
+    {% endif %}
 
     {% if messages %}
     <div class="fixed top-20 right-5 z-[200] space-y-2 pointer-events-none" id="toast-container">
@@ -817,7 +822,17 @@
                         localStorage.setItem('ml-theme', val ? 'dark' : 'light');
                     });
                     this.$nextTick(() => lucide.createIcons());
-                    window.addEventListener('beforeunload', () => this.loading = true);
+
+                    // Optimized loading trigger: only on actual navigation
+                    window.addEventListener('beforeunload', (e) => {
+                        // Avoid trigger on simple links that might be canceled or very fast
+                        this.loading = true;
+                    });
+
+                    // Hide loading indicator when page is shown (handles back/forward cache)
+                    window.addEventListener('pageshow', () => {
+                        this.loading = false;
+                    });
                 },
                 toggleDark() {
                     this.dark = !this.dark;

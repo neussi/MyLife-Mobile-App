@@ -1,171 +1,172 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ title }} | MyLife{% endblock %}
-{% block page_title %}{{ title }}{% endblock %}
-{% block page_subtitle %}Suivez vos flux financiers avec précision.{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
-<div class="max-w-xl mx-auto" x-data="{ type: '{{ form.type.value|default:'EXPENSE' }}' }">
-    <!-- Header Card -->
-    <div class="card mb-6 p-6 overflow-hidden relative border-none shadow-lg transition-colors duration-500"
-        :class="type === 'INCOME' ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-red-600 shadow-red-500/20'">
-        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="relative z-10 flex items-center gap-4 text-white">
-            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                <i data-lucide="receipt" class="w-6 h-6" x-show="type === 'EXPENSE'"></i>
-                <i data-lucide="trending-up" class="w-6 h-6" x-show="type === 'INCOME'"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold" style="font-family:'Sora',system-ui,sans-serif;">Flux Financier</h2>
-                <p class="text-white/80 text-xs"
-                    x-text="type === 'INCOME' ? 'Enregistrez un revenu' : 'Enregistrez une dépense'"></p>
-            </div>
+<div class="max-w-4xl mx-auto" x-data="{ type: '{{ form.type.value|default:'EXPENSE' }}' }">
+
+    <!-- Hero Header -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <nav class="flex items-center gap-2 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+                <a href="{% url 'finance_dashboard' %}" class="hover:text-emerald-500 transition-colors">Finance</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-neutral-900 dark:text-white">{{ title }}</span>
+            </nav>
+            <h1 class="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight"
+                style="font-family:'Sora',sans-serif;">
+                {{ title }}
+            </h1>
+            <p class="mt-2 text-sm text-neutral-500 max-w-md">
+                Prenez le contrôle de vos finances. Chaque transaction est une étape vers votre liberté.
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary px-6">Annuler</a>
+            <button type="submit" form="main-transaction-form" class="btn btn-primary px-8 shadow-lg transition-all"
+                :class="type === 'INCOME' ? 'bg-emerald-600 border-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20' : 'bg-red-600 border-red-600 hover:bg-red-700 shadow-red-500/20'">
+                {% if form.instance.pk %}Enregistrer{% else %}Ajouter la transaction{% endif %}
+            </button>
         </div>
     </div>
 
-    <div class="card p-8 border-surface-200/60 dark:border-surface-800/60 shadow-dropdown relative overflow-hidden">
-        <!-- Decoration indicator -->
-        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 transition-colors duration-500 pointer-events-none"
-            :class="type === 'INCOME' ? 'bg-emerald-500' : 'bg-red-500'"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Main Form -->
+        <div class="lg:col-span-8">
+            <div class="card overflow-hidden relative">
+                <!-- Dynamic Stripe -->
+                <div class="absolute top-0 left-0 right-0 h-1.5 transition-all duration-500"
+                    :class="type === 'INCOME' ? 'bg-emerald-500' : 'bg-red-500'"></div>
 
-        <form method="post" class="space-y-6 relative z-10">
-            {% csrf_token %}
+                <form id="main-transaction-form" method="post" class="p-8 space-y-8">
+                    {% csrf_token %}
 
-            <!-- Type Selector (Income/Expense) -->
-            <div class="flex p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
-                <label class="flex-1 cursor-pointer">
-                    <input type="radio" name="type" value="EXPENSE" x-model="type" class="sr-only">
-                    <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
-                        :class="type === 'EXPENSE' ? 'bg-white dark:bg-neutral-700 text-red-600 shadow-sm' : 'text-neutral-500'">
-                        Dépense
+                    <!-- Type Toggle -->
+                    <div class="flex p-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-[1.25rem]">
+                        <label class="flex-1 cursor-pointer group">
+                            <input type="radio" name="type" value="EXPENSE" x-model="type" class="sr-only">
+                            <div class="py-3 rounded-[0.875rem] text-center text-xs font-bold transition-all uppercase tracking-widest flex items-center justify-center gap-3"
+                                :class="type === 'EXPENSE' ? 'bg-white dark:bg-neutral-700 text-red-600 shadow-xl ring-1 ring-black/5' : 'text-neutral-500 group-hover:text-neutral-700'">
+                                <i data-lucide="trending-down" class="w-4 h-4"></i>
+                                Dépense
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer group">
+                            <input type="radio" name="type" value="INCOME" x-model="type" class="sr-only">
+                            <div class="py-3 rounded-[0.875rem] text-center text-xs font-bold transition-all uppercase tracking-widest flex items-center justify-center gap-3"
+                                :class="type === 'INCOME' ? 'bg-white dark:bg-neutral-700 text-emerald-600 shadow-xl ring-1 ring-black/5' : 'text-neutral-500 group-hover:text-neutral-700'">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                Revenu
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <label class="flex-1 cursor-pointer">
-                    <input type="radio" name="type" value="INCOME" x-model="type" class="sr-only">
-                    <div class="py-2.5 rounded-lg text-center text-xs font-bold transition-all uppercase tracking-widest"
-                        :class="type === 'INCOME' ? 'bg-white dark:bg-neutral-700 text-emerald-600 shadow-sm' : 'text-neutral-500'">
-                        Revenu
+
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="label">Montant de la transaction</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-1.5 flex items-center pointer-events-none">
+                                    <div
+                                        class="bg-neutral-50 dark:bg-neutral-800 px-3 py-2 rounded-lg text-[10px] font-bold text-neutral-400 group-focus-within:text-brand-500 transition-colors uppercase">
+                                        FCFA</div>
+                                </div>
+                                {{ form.amount }}
+                            </div>
+                            {% if form.amount.errors %}<p class="text-[11px] text-red-500 font-medium">{{
+                                form.amount.errors.0 }}</p>{% endif %}
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="label">Libellé / Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<p class="text-[11px] text-red-500 font-medium">{{
+                                form.description.errors.0 }}</p>{% endif %}
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="label">Date du flux</label>
+                                <div class="relative">
+                                    <i data-lucide="calendar"
+                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                                    {{ form.date }}
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label">Catégorie</label>
+                                <div class="relative">
+                                    <i data-lucide="tag"
+                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                                    {{ form.category }}
+                                    <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-neutral-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </label>
+                </form>
             </div>
+        </div>
 
-            <!-- Amount -->
-            <div class="space-y-1.5">
-                <label class="label flex items-center gap-2">
-                    <i data-lucide="euro" class="w-3.5 h-3.5 text-sky-500"></i>
-                    Montant (FCFA)
-                </label>
-                <div class="relative group">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 font-bold">FCFA</span>
-                    {{ form.amount }}
+        <!-- Sidebar Advice -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="card p-6 flex flex-col items-center justify-center text-center">
+                <div
+                    class="w-16 h-16 rounded-[2rem] bg-neutral-50 dark:bg-neutral-800 flex items-center justify-center mb-6">
+                    <i data-lucide="wallet" class="w-8 h-8 text-neutral-300"></i>
                 </div>
-                {% if form.amount.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.amount.errors.0 }}
-                </p>{% endif %}
+                <h4 class="text-sm font-bold text-neutral-900 dark:text-white" style="font-family:'Sora',sans-serif;">
+                    Budget Intelligent</h4>
+                <p class="mt-2 text-xs text-neutral-400 leading-relaxed px-2">
+                    Saviez-vous que noter chaque petite dépense permet d'économiser jusqu'à 15% par mois ?
+                </p>
             </div>
 
-            <!-- Description -->
-            <div class="space-y-1.5">
-                <label class="label flex items-center gap-2">
-                    <i data-lucide="align-left" class="w-3.5 h-3.5 text-sky-500"></i>
-                    Description
-                </label>
-                {{ form.description }}
-                {% if form.description.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
-                    form.description.errors.0 }}</p>{% endif %}
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <!-- Date -->
-                <div class="space-y-1.5">
-                    <label class="label flex items-center gap-2">
-                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-500"></i>
-                        Date
-                    </label>
-                    <div class="relative">
-                        <i data-lucide="clock"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400"></i>
-                        {{ form.date }}
-                    </div>
-                    {% if form.date.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{ form.date.errors.0 }}
-                    </p>{% endif %}
+            <!-- Context Hint (Reactive) -->
+            <div class="p-6 rounded-2xl text-white shadow-xl transition-all duration-500"
+                :class="type === 'INCOME' ? 'bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-500/10' : 'bg-gradient-to-br from-red-600 to-rose-700 shadow-red-500/10'">
+                <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-4">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-white/80"></i>
                 </div>
-
-                <!-- Category -->
-                <div class="space-y-1.5">
-                    <label class="label flex items-center gap-2">
-                        <i data-lucide="tag" class="w-3.5 h-3.5 text-sky-500"></i>
-                        Catégorie
-                    </label>
-                    <div class="relative">
-                        {{ form.category }}
-                        <i data-lucide="chevron-down"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"></i>
-                    </div>
-                    {% if form.category.errors %}<p class="text-[10px] text-red-500 font-bold mt-1">{{
-                        form.category.errors.0 }}</p>{% endif %}
-                </div>
+                <h4 class="font-bold text-base mb-2" style="font-family:'Sora',sans-serif;">
+                    <span x-show="type === 'INCOME'">Abondance</span>
+                    <span x-show="type === 'EXPENSE'">Discipline</span>
+                </h4>
+                <p class="text-xs leading-relaxed opacity-90">
+                    <span x-show="type === 'INCOME'">Pensez à votre futur : mettez de côté une partie de ce revenu dès
+                        maintenant.</span>
+                    <span x-show="type === 'EXPENSE'">Est-ce un besoin ou une envie ? Chaque choix forge votre
+                        indépendance financière.</span>
+                </p>
             </div>
-
-            <div class="flex items-center justify-end gap-3 pt-6 border-t border-surface-100 dark:border-surface-800">
-                <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary">Annuler</a>
-                <button type="submit" class="btn text-white px-8 transition-colors"
-                    :class="type === 'INCOME' ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-600' : 'bg-red-600 hover:bg-red-700 border-red-600'">
-                    {% if form.instance.pk %}Enregistrer{% else %}Ajouter la transaction{% endif %}
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <style>
-    .field,
-    select.field,
-    textarea.field,
-    input[type="number"].field,
-    input[type="date"].field {
-        width: 100%;
-        background-color: #f9fafb;
-        /* neutral-50 */
-        border: 1px solid #e5e7eb;
-        /* neutral-200 */
-        border-radius: 0.75rem;
-        /* rounded-xl */
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        /* text-sm */
-        transition: all 0.2s;
+    input[type="text"],
+    input[type="date"],
+    select {
+        @apply field !important;
+        padding-left: 2.75rem !important;
     }
 
-    .dark .field,
-    .dark select.field,
-    .dark textarea.field {
-        background-color: #171717;
-        /* neutral-900 */
-        border-color: #262626;
-        /* neutral-800 */
-        color: white;
+    input[name="amount"] {
+        @apply field !important;
+        padding-left: 4.5rem !important;
+        font-size: 1.25rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.01em !important;
     }
 
-    .field:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
-        /* sky-500/20 */
-        border-color: #0ea5e9;
-        /* sky-500 */
-    }
-
-    input[type="number"].field {
-        padding-left: 2.25rem;
-        font-weight: 700;
-        font-size: 1.125rem;
-    }
-
-    input[type="date"].field {
-        padding-left: 2.75rem;
+    textarea {
+        @apply field min-h-[140px] leading-relaxed !important;
     }
 
     select {
-        appearance: none;
+        @apply appearance-none cursor-pointer;
     }
 </style>
 {% endblock %}

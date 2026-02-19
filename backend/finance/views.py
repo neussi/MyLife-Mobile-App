@@ -100,7 +100,7 @@ def transaction_delete(request, pk):
         messages.success(request, "Transaction supprimée.")
         return redirect('finance_dashboard')
     return render(request, 'includes/confirm_delete.html', {
-        'object': f"{transaction.amount}€ - {transaction.description or transaction.category}",
+        'object': f"{transaction.amount} FCFA - {transaction.description or transaction.category}",
         'type': 'transaction',
         'cancel_url': reverse('finance_dashboard')
     })

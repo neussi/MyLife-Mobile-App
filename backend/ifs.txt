@@ -1,0 +1,22 @@
+31:                    Vous avez <span class="font-bold text-white">{{ tasks_today.count }} tâche{% if tasks_today.count >
+33:                    prévue{% if tasks_today.count > 1 %}s{% endif %} pour aujourd'hui.
+50:    {% if advisor_mood %}
+52:        class="card p-5 border-l-4 {% if advisor_mood.mood == 'FURIOUS' %}border-red-600 bg-red-50/50 dark:bg-red-900/10{% elif advisor_mood.mood == 'ANGRY' %}border-red-400{% elif advisor_mood.mood == 'CONCERNED' %}border-amber-400{% else %}border-sky-400{% endif %}">
+62:                        {% if advisor_mood.mood == 'HAPPY' %}M. Bienveillant
+71:                    {% if advisor_mood.mood == 'HAPPY' %}"Vous faites du bon travail. Continuez sur cette lancée !"
+169:                {% if tasks_today.count > 0 %}
+193:                {{ tasks_pending }} tâche{% if tasks_pending > 1 %}s{% endif %} en attente
+201:                    class="w-9 h-9 rounded-xl {% if balance >= 0 %}bg-emerald-50 dark:bg-emerald-900/20{% else %}bg-red-50 dark:bg-red-900/20{% endif %} flex items-center justify-center">
+202:                    <i data-lucide="{% if balance >= 0 %}trending-up{% else %}trending-down{% endif %}"
+203:                        class="w-[17px] h-[17px] {% if balance >= 0 %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
+209:            <p class="text-[1.625rem] font-bold leading-none {% if balance >= 0 %}text-emerald-600{% else %}text-red-500{% endif %}"
+267:                                   {% if task.is_completed %}bg-sky-500 border-sky-500{% else %}border-neutral-200 dark:border-neutral-600 hover:border-sky-400{% endif %}">
+268:                        {% if task.is_completed %}
+274:                                  {% if task.is_completed %}line-through text-neutral-300 dark:text-neutral-600
+278:                        {% if task.due_date %}
+283:                        {% if task.priority == 'HIGH' %}bg-red-50 text-red-500 dark:bg-red-900/20
+366:                                        {% if tx.type == 'INCOME' %}bg-emerald-50 dark:bg-emerald-900/20{% else %}bg-red-50 dark:bg-red-900/20{% endif %}">
+367:                                <i data-lucide="{% if tx.type == 'INCOME' %}arrow-up-right{% else %}arrow-down-left{% endif %}"
+368:                                    class="w-3.5 h-3.5 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}"></i>
+375:                            class="text-xs font-bold flex-shrink-0 ml-2 {% if tx.type == 'INCOME' %}text-emerald-500{% else %}text-red-500{% endif %}">
+376:                            {% if tx.type == 'INCOME' %}+{% else %}-{% endif %}{{ tx.amount|floatformat:2 }} FCFA

@@ -27,7 +27,7 @@ class AdvisorBrain:
             self.reports.append({
                 'category': 'FINANCE',
                 'severity': 'HIGH',
-                'message': f"Tu es dans le rouge de {abs(balance)}€ ce mois-ci ! Tu comptes vivre de quoi, d'amour et d'eau fraîche ?"
+                'message': f"Tu es dans le rouge de {abs(balance)} FCFA ce mois-ci ! Tu comptes vivre de quoi, d'amour et d'eau fraîche ?"
             })
         elif balance < 100:
             self.anger_delta += 5

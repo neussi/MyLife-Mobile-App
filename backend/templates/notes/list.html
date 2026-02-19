@@ -7,326 +7,209 @@
 {% block extra_head %}
 <style>
     .note-card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background: #ffffff;
-        border: 1px solid #eeeeee;
-        border-radius: 1rem;
-        overflow: hidden;
-        transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
-    }
-
-    .dark .note-card {
-        background: #1c1c1c;
-        border-color: #2d2d2d;
+        @apply relative flex flex-col bg-white dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-100 dark:border-neutral-800/60 rounded-[1.5rem] overflow-hidden transition-all duration-300;
     }
 
     .note-card:hover {
-        box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.09);
-        border-color: #d4d4d4;
-        transform: translateY(-2px);
-    }
-
-    .dark .note-card:hover {
-        border-color: #404040;
+        @apply shadow-xl shadow-neutral-200/50 dark:shadow-black/20 -translate-y-1 border-neutral-200 dark:border-neutral-700;
     }
 
     .note-accent {
-        height: 3px;
-        width: 100%;
-        flex-shrink: 0;
+        @apply absolute top-0 left-0 right-0 h-[3px];
     }
 
     .note-body {
-        padding: 1rem 1.125rem;
-        flex: 1;
-        display: block;
-        text-decoration: none;
+        @apply p-6 flex-1 block no-underline;
     }
 
     .note-footer {
-        padding: 0.625rem 1.125rem;
-        border-top: 1px solid #eeeeee;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fafafa;
-    }
-
-    .dark .note-footer {
-        border-color: #2d2d2d;
-        background: rgba(45, 45, 45, 0.4);
+        @apply px-6 py-4 border-t border-neutral-50 dark:border-neutral-800/50 flex items-center justify-between bg-neutral-50/50 dark:bg-neutral-800/20;
     }
 
     .note-actions {
-        position: absolute;
-        top: 0.625rem;
-        right: 0.625rem;
-        display: flex;
-        gap: 0.25rem;
-        opacity: 0;
-        transition: opacity 150ms;
+        @apply absolute top-4 right-4 flex gap-1.5 opacity-0 transition-opacity duration-200;
     }
 
     .note-card:hover .note-actions {
-        opacity: 1;
+        @apply opacity-100;
     }
 
     .note-action-btn {
-        width: 1.75rem;
-        height: 1.75rem;
-        border-radius: 0.5rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid #eeeeee;
-        color: #737373;
-        transition: all 120ms;
-        cursor: pointer;
-    }
-
-    .dark .note-action-btn {
-        background: rgba(28, 28, 28, 0.95);
-        border-color: #2d2d2d;
-        color: #a3a3a3;
-    }
-
-    .note-action-btn:hover {
-        color: #0284c7;
-        border-color: #bae6fd;
-        background: #f0f9ff;
+        @apply w-8 h-8 rounded-xl flex items-center justify-center bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm border border-neutral-100 dark:border-neutral-700 text-neutral-500 hover:text-sky-500 hover:border-sky-200 transition-all shadow-sm;
     }
 
     .note-action-btn.danger:hover {
-        color: #ef4444;
-        border-color: #fca5a5;
-        background: #fef2f2;
+        @apply text-red-500 border-red-200 bg-red-50 dark:bg-red-900/20;
     }
 
     .pin-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.125rem 0.5rem;
-        background: #fef3c7;
-        color: #d97706;
-        border-radius: 0.375rem;
-        font-size: 0.5625rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        flex-shrink: 0;
-    }
-
-    .dark .pin-badge {
-        background: rgba(217, 119, 6, 0.15);
-        color: #fbbf24;
+        @apply inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-sm border border-amber-100 dark:border-amber-900/30;
     }
 
     .section-label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.6875rem;
-        font-weight: 700;
-        color: #a3a3a3;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 1rem;
+        @apply flex items-center gap-3 text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em] mb-6;
     }
 
     .section-label::after {
         content: '';
-        flex: 1;
-        height: 1px;
-        background: #eeeeee;
-    }
-
-    .dark .section-label {
-        color: #525252;
-    }
-
-    .dark .section-label::after {
-        background: #2d2d2d;
+        @apply flex-1 h-[1px] bg-neutral-100 dark:bg-neutral-800;
     }
 
     /* Grid / list layouts */
     .notes-grid {
         display: grid;
-        gap: 1rem;
-        grid-template-columns: 1fr;
-    }
-
-    @media (min-width: 640px) {
-        .notes-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .notes-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .notes-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 
     .notes-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.625rem;
+        @apply flex flex-col gap-4;
     }
 
     .notes-list .note-card {
-        flex-direction: row;
+        @apply flex-row h-32;
     }
 
     .notes-list .note-accent {
-        width: 3px;
-        height: auto;
+        @apply w-[4px] h-full absolute left-0 right-auto;
     }
 
     .notes-list .note-body {
-        padding: 0.875rem 1rem;
+        @apply pl-8;
     }
 
     .view-btn {
-        padding: 0.375rem;
-        border-radius: 0.375rem;
-        color: #a3a3a3;
-        transition: all 120ms;
-        cursor: pointer;
+        @apply p-2 rounded-xl text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition-all;
     }
 
     .view-btn.active {
-        background: #ffffff;
-        color: #0f0f0f;
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-    }
-
-    .dark .view-btn.active {
-        background: #404040;
-        color: #ffffff;
+        @apply bg-white dark:bg-neutral-800 text-sky-500 shadow-sm ring-1 ring-neutral-200/50 dark:ring-neutral-700;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="space-y-7" x-data="notesApp()" x-init="init()">
+<div class="space-y-8" x-data="notesApp()" x-init="init()">
 
-    <!-- ── Actions ────────────────────────────────────────────── -->
-    <div class="flex flex-wrap items-center gap-3">
-
-        <form method="get" class="flex flex-1 min-w-[200px] max-w-lg gap-2">
-            <div class="relative flex-1">
-                <i data-lucide="search"
-                    class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
-                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Rechercher dans vos notes…"
-                    class="field pl-10">
+    <!-- ── Filter Bar ────────────────────────────────────────────── -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
+                <i data-lucide="sticky-note" class="w-6 h-6 text-sky-500"></i>
             </div>
-
-            <div class="relative flex-shrink-0" x-data="{ open: false }">
-                <button type="button" @click="open = !open"
-                    class="btn btn-secondary h-full gap-2{% if category %} bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-900/20 dark:text-sky-400{% endif %}">
-                    <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
-                    {% if category %}{{ category }}{% else %}Filtrer{% endif %}
-                    <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"
-                        :class="open ? 'rotate-180' : ''"></i>
-                </button>
-
-                <div x-show="open" @click.outside="open = false" x-cloak
-                    x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 scale-95 translate-y-1"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0 scale-95" class="dropdown absolute right-0 mt-2 w-52 z-20"
-                    style="transform-origin: top right;">
-                    <div class="py-1">
-                        <a href="{% url 'note_list' %}"
-                            class="dropdown-item{% if not category %} font-semibold text-sky-500{% endif %}">
-                            <i data-lucide="layers" class="w-3.5 h-3.5 text-neutral-300"></i>
-                            Toutes les notes
-                        </a>
-                    </div>
-                    {% if categories %}
-                    <div class="sep mx-3"></div>
-                    <div class="py-1">
-                        {% for cat_val, cat_label in categories %}
-                        <a href="?category={{ cat_val }}"
-                            class="dropdown-item{% if category == cat_val %} font-semibold text-sky-500{% endif %}">
-                            <i data-lucide="tag" class="w-3.5 h-3.5 text-neutral-300"></i>
-                            {{ cat_label }}
-                        </a>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
+            <div>
+                <h1 class="text-xl font-bold text-neutral-900 dark:text-white" style="font-family:'Sora',sans-serif;">
+                    Bibliothèque de Notes</h1>
+                <p class="text-xs text-neutral-400">{{ notes_pinned|length|add:notes|length }} éléments enregistrés</p>
             </div>
-        </form>
-
-        <!-- Vue switcher -->
-        <div class="flex items-center gap-0.5 bg-neutral-100 dark:bg-neutral-700 rounded-lg p-1">
-            <button @click="setView('grid')" :class="view === 'grid' ? 'active' : ''" class="view-btn">
-                <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
-            </button>
-            <button @click="setView('list')" :class="view === 'list' ? 'active' : ''" class="view-btn">
-                <i data-lucide="list" class="w-3.5 h-3.5"></i>
-            </button>
         </div>
 
-        <a href="{% url 'note_create' %}" class="btn btn-primary">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Nouvelle note
-        </a>
+        <div class="flex items-center gap-3">
+            <!-- View Switcher -->
+            <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 p-1.5 rounded-2xl">
+                <button @click="setView('grid')" :class="view === 'grid' ? 'active' : ''" class="view-btn">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                </button>
+                <button @click="setView('list')" :class="view === 'list' ? 'active' : ''" class="view-btn">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <a href="{% url 'note_create' %}" class="btn btn-primary px-6 h-11 shadow-lg shadow-sky-500/20">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Nouvelle Note</span>
+            </a>
+        </div>
     </div>
 
-    <!-- ── Notes épinglées ───────────────────────────────────── -->
+    <!-- ── Search & Filters ──────────────────────────────────────── -->
+    <div
+        class="card p-4 flex flex-wrap items-center gap-4 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm border-neutral-100 dark:border-neutral-800/50">
+        <form method="get" class="flex-1 min-w-[300px] relative">
+            <i data-lucide="search"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+            <input type="text" name="q" value="{{ query|default:'' }}"
+                placeholder="Rechercher une idée, un tag, un titre..."
+                class="field pl-11 h-12 bg-neutral-50/50 dark:bg-neutral-800/50 border-transparent focus:bg-white dark:focus:bg-neutral-800">
+        </form>
+
+        <div class="relative" x-data="{ open: false }">
+            <button type="button" @click="open = !open"
+                class="btn bg-neutral-50 dark:bg-neutral-800/50 border-transparent h-12 px-5 gap-3 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all font-medium text-sm text-neutral-600 dark:text-neutral-300">
+                <i data-lucide="filter" class="w-4 h-4"></i>
+                {% if category %}{{ category }}{% else %}Toutes les catégories{% endif %}
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-50" :class="open ? 'rotate-180' : ''"></i>
+            </button>
+
+            <div x-show="open" @click.outside="open = false" x-cloak
+                x-transition:enter="transition ease-out duration-150"
+                x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                class="absolute right-0 mt-3 w-64 p-2 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl border border-neutral-100 dark:border-neutral-700 z-50">
+                <a href="{% url 'note_list' %}"
+                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-all group">
+                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
+                        <i data-lucide="layers" class="w-4 h-4 text-sky-500"></i>
+                    </div>
+                    <span class="text-sm font-medium {% if not category %}text-sky-600{% endif %}">Tous les types</span>
+                </a>
+                <div class="my-2 border-t border-neutral-50 dark:border-neutral-700/50 mx-2"></div>
+                {% for cat_val, cat_label in categories %}
+                <a href="?category={{ cat_val }}"
+                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-all group">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center group-hover:bg-sky-100 dark:group-hover:bg-sky-900/30 transition-colors">
+                        <i data-lucide="tag" class="w-4 h-4 text-neutral-400 group-hover:text-sky-500"></i>
+                    </div>
+                    <span class="text-sm font-medium {% if category == cat_val %}text-sky-600{% endif %}">{{ cat_label
+                        }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Pinned Notes ──────────────────────────────────────────── -->
     {% if notes_pinned %}
-    <div>
+    <div class="space-y-4">
         <div class="section-label">
-            <i data-lucide="pin" class="w-3 h-3"></i>
-            Épinglées
+            <i data-lucide="star" class="w-3 h-3 text-amber-500"></i> Épinglées
         </div>
         <div :class="view === 'grid' ? 'notes-grid' : 'notes-list'">
             {% for note in notes_pinned %}
             <div class="note-card">
-                <div class="note-accent" style="background-color: {{ note.color|default:'#0ea5e9' }}"></div>
+                <div class="note-accent" style="background-color: {{ note.color|default:'#f59e0b' }}"></div>
 
                 <div class="note-actions">
-                    <a href="{% url 'note_detail' note.id %}" class="note-action-btn" title="Voir">
-                        <i data-lucide="eye" class="w-3 h-3"></i>
-                    </a>
                     <a href="{% url 'note_edit' note.id %}" class="note-action-btn" title="Modifier">
-                        <i data-lucide="edit-3" class="w-3 h-3"></i>
+                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                    </a>
+                    <a href="{% url 'note_delete' note.id %}" class="note-action-btn danger" title="Supprimer">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </a>
                 </div>
 
                 <a href="{% url 'note_detail' note.id %}" class="note-body">
-                    <div class="flex items-start gap-2 mb-2">
-                        <p class="text-sm font-semibold text-neutral-900 dark:text-white leading-snug flex-1 truncate"
-                            style="font-family:'Sora',system-ui,sans-serif;">{{ note.title }}</p>
-                        <span class="pin-badge">
-                            <i data-lucide="pin" class="w-2 h-2"></i>épinglée
-                        </span>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="pin-badge"><i data-lucide="pin" class="w-2.5 h-2.5"></i>Épinglée</span>
+                        <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">{{
+                            note.updated_at|timesince }}</span>
                     </div>
-                    <p class="text-xs text-neutral-400 leading-relaxed line-clamp-3">
-                        {{ note.content|striptags|truncatechars:120 }}
-                    </p>
+                    <h3 class="text-base font-bold text-neutral-900 dark:text-white mb-2 leading-tight line-clamp-2"
+                        style="font-family:'Sora',sans-serif;">{{ note.title }}</h3>
+                    <p class="text-[13px] text-neutral-500 dark:text-neutral-400 leading-relaxed line-clamp-3">{{
+                        note.content|striptags|truncatechars:180 }}</p>
                 </a>
 
                 <div class="note-footer">
-                    <span class="text-[10px] text-neutral-400 font-medium">{{ note.updated_at|timesince }}</span>
-                    {% if note.category %}
-                    <span
-                        class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-[9px]">{{
-                        note.category }}</span>
-                    {% endif %}
+                    <div class="flex items-center gap-2">
+                        {% if note.category %}
+                        <span
+                            class="px-2 py-0.5 rounded-md bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 text-[10px] font-bold text-neutral-500 uppercase tracking-tight">{{
+                            note.category }}</span>
+                        {% endif %}
+                    </div>
+                    <i data-lucide="arrow-right" class="w-3 h-3 text-neutral-300"></i>
                 </div>
             </div>
             {% endfor %}
@@ -334,13 +217,12 @@
     </div>
     {% endif %}
 
-    <!-- ── Toutes les notes ───────────────────────────────────── -->
+    <!-- ── All Notes ─────────────────────────────────────────────── -->
     {% if notes %}
-    <div>
+    <div class="space-y-4">
         {% if notes_pinned %}
         <div class="section-label">
-            <i data-lucide="file-text" class="w-3 h-3"></i>
-            Autres notes
+            <i data-lucide="archive" class="w-3 h-3"></i> Bibliothèque
         </div>
         {% endif %}
 
@@ -350,67 +232,62 @@
                 <div class="note-accent" style="background-color: {{ note.color|default:'#0ea5e9' }}"></div>
 
                 <div class="note-actions">
-                    <a href="{% url 'note_detail' note.id %}" class="note-action-btn" title="Voir">
-                        <i data-lucide="eye" class="w-3 h-3"></i>
-                    </a>
                     <a href="{% url 'note_edit' note.id %}" class="note-action-btn" title="Modifier">
-                        <i data-lucide="edit-3" class="w-3 h-3"></i>
+                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                     </a>
                     <a href="{% url 'note_delete' note.id %}" class="note-action-btn danger" title="Supprimer">
-                        <i data-lucide="trash-2" class="w-3 h-3"></i>
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </a>
                 </div>
 
                 <a href="{% url 'note_detail' note.id %}" class="note-body">
-                    <p class="text-sm font-semibold text-neutral-900 dark:text-white leading-snug mb-2 pr-16 truncate"
-                        style="font-family:'Sora',system-ui,sans-serif;">{{ note.title }}</p>
-                    <p class="text-xs text-neutral-400 leading-relaxed line-clamp-3">
-                        {{ note.content|striptags|truncatechars:120 }}
-                    </p>
+                    <div class="mb-3">
+                        <span class="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">{{
+                            note.updated_at|timesince }}</span>
+                    </div>
+                    <h3 class="text-base font-bold text-neutral-900 dark:text-white mb-2 leading-tight line-clamp-2"
+                        style="font-family:'Sora',sans-serif;">{{ note.title }}</h3>
+                    <p class="text-[13px] text-neutral-500 dark:text-neutral-400 leading-relaxed line-clamp-3">{{
+                        note.content|striptags|truncatechars:180 }}</p>
                 </a>
 
                 <div class="note-footer">
-                    <span class="text-[10px] text-neutral-400 font-medium">{{ note.updated_at|timesince }}</span>
-                    {% if note.category %}
-                    <span
-                        class="badge bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-[9px]">{{
-                        note.category }}</span>
-                    {% endif %}
+                    <div class="flex items-center gap-2">
+                        {% if note.category %}
+                        <span
+                            class="px-2 py-0.5 rounded-md bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 text-[10px] font-bold text-neutral-500 uppercase tracking-tight">{{
+                            note.category }}</span>
+                        {% endif %}
+                    </div>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neutral-300"></i>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-
     {% elif not notes_pinned %}
-    <div class="card flex flex-col items-center justify-center text-center py-24 px-8">
-        <div class="relative mb-6">
-            <div class="w-20 h-20 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
-                <i data-lucide="file-text" class="w-9 h-9 text-amber-300 dark:text-amber-600"></i>
-            </div>
+    <!-- Empty State -->
+    <div
+        class="card flex flex-col items-center justify-center py-32 px-10 text-center bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm">
+        <div
+            class="w-24 h-24 rounded-[2rem] bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mb-8 relative">
+            <i data-lucide="file-text" class="w-10 h-10 text-sky-400"></i>
             <div
-                class="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-150 dark:border-neutral-700 flex items-center justify-center shadow-sm">
-                <i data-lucide="plus" class="w-3.5 h-3.5 text-sky-500"></i>
+                class="absolute -bottom-1 -right-1 w-8 h-8 rounded-xl bg-white dark:bg-neutral-800 flex items-center justify-center shadow-lg ring-4 ring-neutral-50 dark:ring-neutral-900">
+                <i data-lucide="plus" class="w-4 h-4 text-sky-600"></i>
             </div>
         </div>
-        {% if query %}
-        <h3 class="text-lg font-bold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
-            Aucun résultat pour "{{ query }}"
-        </h3>
-        <p class="text-sm text-neutral-400 max-w-xs mt-2 leading-relaxed">Essayez d'autres mots-clés ou effacez les
-            filtres.</p>
-        <a href="{% url 'note_list' %}" class="btn btn-secondary mt-6">Effacer la recherche</a>
-        {% else %}
-        <h3 class="text-lg font-bold text-neutral-900 dark:text-white" style="font-family:'Sora',system-ui,sans-serif;">
-            Pas encore de notes
-        </h3>
-        <p class="text-sm text-neutral-400 max-w-xs mt-2 leading-relaxed">Commencez à capturer vos idées, listes ou
-            pensées du moment.</p>
-        <a href="{% url 'note_create' %}" class="btn btn-primary mt-8">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Créer ma première note
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-3" style="font-family:'Sora',sans-serif;">
+            {% if query %}Aucun résultat pour votre recherche{% else %}Votre esprit est une toile vierge{% endif %}
+        </h2>
+        <p class="text-neutral-500 dark:text-neutral-400 max-w-sm mb-10 text-sm leading-relaxed">
+            {% if query %}Essayez d'autres termes ou explorez une catégorie différente.{% else %}Capturez chaque idée,
+            chaque projet et chaque inspiration avant qu'elle ne s'envole.{% endif %}
+        </p>
+        <a href="{% url 'note_create' %}" class="btn btn-primary px-8 h-12 shadow-xl shadow-sky-500/20">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Commencer à écrire
         </a>
-        {% endif %}
     </div>
     {% endif %}
 
@@ -431,6 +308,9 @@
             setView(v) {
                 this.view = v;
                 localStorage.setItem('notes-view', v);
+                this.$nextTick(() => {
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                });
             }
         }
     }
