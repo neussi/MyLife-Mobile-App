@@ -595,8 +595,7 @@
                                     style="font-family:'Sora',system-ui,sans-serif;">Notifications</span>
                                 {% if unread_notifications_count > 0 %}
                                 <span class="badge bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400">
-                                    {{ unread_notifications_count }} nouvelle{% if unread_notifications_count > 1 %}s{%
-                                    endif %}
+                                    {{ unread_notifications_count }} nouvelle{% if unread_notifications_count > 1 %}s{% endif %}
                                 </span>
                                 {% endif %}
                             </div>
