@@ -7,481 +7,281 @@
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <style>
-    /* ── FullCalendar theme override ─────────────────────── */
-    :root {
-        --fc-border-color: #eeeeee;
-        --fc-page-bg-color: #ffffff;
-        --fc-neutral-bg-color: #fafafa;
-        --fc-today-bg-color: rgba(14, 165, 233, 0.05);
-        --fc-event-border-color: transparent;
-        --fc-event-bg-color: #0ea5e9;
-        --fc-event-text-color: #ffffff;
-        --fc-button-bg-color: #ffffff;
-        --fc-button-border-color: #e5e5e5;
-        --fc-button-text-color: #525252;
-        --fc-button-hover-bg-color: #f5f5f5;
-        --fc-button-hover-border-color: #e5e5e5;
-        --fc-button-active-bg-color: #0284c7;
-        --fc-button-active-border-color: #0284c7;
-        --fc-button-active-text-color: #ffffff;
-        --fc-daygrid-dot-event-marker-size: 6px;
-    }
+  :root {
+    --fc-border-color: #eeeeee;
+    --fc-page-bg-color: #ffffff;
+    --fc-neutral-bg-color: #fafafa;
+    --fc-today-bg-color: rgba(14, 165, 233, 0.05);
+    --fc-event-border-color: transparent;
+    --fc-event-bg-color: #0ea5e9;
+    --fc-event-text-color: #ffffff;
+    --fc-button-bg-color: #ffffff;
+    --fc-button-border-color: #e5e5e5;
+    --fc-button-text-color: #525252;
+    --fc-button-hover-bg-color: #f5f5f5;
+    --fc-button-hover-border-color: #e5e5e5;
+    --fc-button-active-bg-color: #0284c7;
+    --fc-button-active-border-color: #0284c7;
+    --fc-button-active-text-color: #ffffff;
+    --fc-daygrid-dot-event-marker-size: 6px;
+  }
+  .dark {
+    --fc-border-color: #2d2d2d;
+    --fc-page-bg-color: #1c1c1c;
+    --fc-neutral-bg-color: #2d2d2d;
+    --fc-today-bg-color: rgba(14, 165, 233, 0.08);
+    --fc-button-bg-color: #2d2d2d;
+    --fc-button-border-color: #404040;
+    --fc-button-text-color: #a3a3a3;
+    --fc-button-hover-bg-color: #404040;
+    --fc-button-hover-border-color: #404040;
+    --fc-button-active-bg-color: #0284c7;
+    --fc-button-active-border-color: #0284c7;
+    --fc-button-active-text-color: #ffffff;
+  }
 
-    .dark {
-        --fc-border-color: #2d2d2d;
-        --fc-page-bg-color: #1c1c1c;
-        --fc-neutral-bg-color: #2d2d2d;
-        --fc-today-bg-color: rgba(14, 165, 233, 0.08);
-        --fc-button-bg-color: #2d2d2d;
-        --fc-button-border-color: #404040;
-        --fc-button-text-color: #a3a3a3;
-        --fc-button-hover-bg-color: #404040;
-        --fc-button-hover-border-color: #404040;
-        --fc-button-active-bg-color: #0284c7;
-        --fc-button-active-border-color: #0284c7;
-        --fc-button-active-text-color: #ffffff;
-    }
+  .fc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 0.8125rem; }
+  .fc .fc-toolbar-title { font-family: 'Sora', system-ui, sans-serif; font-size: 1rem; font-weight: 700; color: #0f0f0f; letter-spacing: -0.01em; }
+  .dark .fc .fc-toolbar-title { color: #ffffff; }
+  .fc .fc-toolbar { padding-bottom: 1rem; border-bottom: 1px solid #eeeeee; margin-bottom: 0 !important; flex-wrap: wrap; gap: 0.5rem; }
+  .dark .fc .fc-toolbar { border-color: #2d2d2d; }
+  .fc .fc-button { font-family: 'DM Sans', system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; padding: 0.375rem 0.75rem; border-radius: 0.5rem; border-width: 1px; box-shadow: none !important; outline: none !important; transition: all 120ms ease; line-height: 1.5; }
+  .fc .fc-button-primary:focus { box-shadow: none !important; }
+  .fc .fc-button-group { gap: 0.25rem; }
+  .fc .fc-button-group .fc-button { border-radius: 0.5rem !important; }
+  .fc .fc-col-header-cell-cushion { padding: 0.75rem 0.25rem; font-size: 0.6875rem; font-weight: 700; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none !important; }
+  .dark .fc .fc-col-header-cell-cushion { color: #525252; }
+  .fc .fc-daygrid-day-number { padding: 0.5rem 0.625rem; font-size: 0.75rem; font-weight: 500; color: #737373; text-decoration: none !important; }
+  .dark .fc .fc-daygrid-day-number { color: #525252; }
+  .fc .fc-day-today .fc-daygrid-day-number { color: #0284c7; font-weight: 700; }
+  .fc .fc-day-today { background: var(--fc-today-bg-color) !important; }
+  .fc .fc-event { border-radius: 4px; padding: 1px 5px; font-size: 0.6875rem; font-weight: 600; border: none !important; cursor: pointer; transition: opacity 120ms, transform 120ms; }
+  .fc .fc-event:hover { opacity: 0.85; transform: scale(1.01); }
+  .fc .fc-timegrid-slot-label-cushion { font-size: 0.6875rem; color: #a3a3a3; font-weight: 500; }
+  .fc .fc-more-link { font-size: 0.6875rem; font-weight: 600; color: #0284c7; }
+  .fc .fc-scrollgrid { border: none !important; }
+  .fc .fc-scrollgrid-section-header > td { border: none !important; }
 
-    .fc {
-        font-family: 'DM Sans', system-ui, sans-serif;
-        font-size: 0.8125rem;
-    }
+  .task-item { padding: 0.875rem 1.25rem; border-bottom: 1px solid #eeeeee; transition: background 120ms; cursor: default; }
+  .dark .task-item { border-color: #2d2d2d; }
+  .task-item:hover { background: #fafafa; }
+  .dark .task-item:hover { background: rgba(45,45,45,0.5); }
+  .task-item:last-child { border-bottom: none; }
 
-    /* Toolbar title */
-    .fc .fc-toolbar-title {
-        font-family: 'Sora', system-ui, sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: #0f0f0f;
-        letter-spacing: -0.01em;
-    }
+  .task-toggle { width: 1.125rem; height: 1.125rem; border-radius: 50%; border: 2px solid; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; transition: all 150ms; cursor: pointer; }
+  .task-toggle-done { background: #0ea5e9; border-color: #0ea5e9; }
+  .task-toggle-todo { border-color: #d4d4d4; }
+  .task-toggle-todo:hover { border-color: #0ea5e9; }
+  .dark .task-toggle-todo { border-color: #404040; }
 
-    .dark .fc .fc-toolbar-title {
-        color: #ffffff;
-    }
-
-    /* Toolbar layout */
-    .fc .fc-toolbar {
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #eeeeee;
-        margin-bottom: 0 !important;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .dark .fc .fc-toolbar {
-        border-color: #2d2d2d;
-    }
-
-    /* Buttons */
-    .fc .fc-button {
-        font-family: 'DM Sans', system-ui, sans-serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.5rem;
-        border-width: 1px;
-        box-shadow: none !important;
-        outline: none !important;
-        transition: all 120ms ease;
-        line-height: 1.5;
-    }
-
-    .fc .fc-button-primary:focus {
-        box-shadow: none !important;
-    }
-
-    .fc .fc-button-group {
-        gap: 0.25rem;
-    }
-
-    .fc .fc-button-group .fc-button {
-        border-radius: 0.5rem !important;
-    }
-
-    /* Day headers */
-    .fc .fc-col-header-cell-cushion {
-        padding: 0.75rem 0.25rem;
-        font-size: 0.6875rem;
-        font-weight: 700;
-        color: #a3a3a3;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        text-decoration: none !important;
-    }
-
-    .dark .fc .fc-col-header-cell-cushion {
-        color: #525252;
-    }
-
-    /* Day number */
-    .fc .fc-daygrid-day-number {
-        padding: 0.5rem 0.625rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: #737373;
-        text-decoration: none !important;
-    }
-
-    .dark .fc .fc-daygrid-day-number {
-        color: #525252;
-    }
-
-    /* Today */
-    .fc .fc-day-today .fc-daygrid-day-number {
-        color: #0284c7;
-        font-weight: 700;
-    }
-
-    .fc .fc-day-today {
-        background: var(--fc-today-bg-color) !important;
-    }
-
-    /* Events */
-    .fc .fc-event {
-        border-radius: 4px;
-        padding: 1px 5px;
-        font-size: 0.6875rem;
-        font-weight: 600;
-        border: none !important;
-        cursor: pointer;
-        transition: opacity 120ms, transform 120ms;
-    }
-
-    .fc .fc-event:hover {
-        opacity: 0.85;
-        transform: scale(1.01);
-    }
-
-    /* Time grid */
-    .fc .fc-timegrid-slot-label-cushion {
-        font-size: 0.6875rem;
-        color: #a3a3a3;
-        font-weight: 500;
-    }
-
-    /* More link */
-    .fc .fc-more-link {
-        font-size: 0.6875rem;
-        font-weight: 600;
-        color: #0284c7;
-    }
-
-    /* Scrollgrid */
-    .fc .fc-scrollgrid {
-        border: none !important;
-    }
-
-    .fc .fc-scrollgrid-section-header>td {
-        border: none !important;
-    }
-
-    /* ── Task sidebar ─────────────────────────────────────── */
-    .task-item {
-        padding: 0.875rem 1.25rem;
-        border-bottom: 1px solid #eeeeee;
-        transition: background 120ms;
-        cursor: default;
-    }
-
-    .dark .task-item {
-        border-color: #2d2d2d;
-    }
-
-    .task-item:hover {
-        background: #fafafa;
-    }
-
-    .dark .task-item:hover {
-        background: rgba(45, 45, 45, 0.5);
-    }
-
-    .task-item:last-child {
-        border-bottom: none;
-    }
-
-    .task-toggle {
-        width: 1.125rem;
-        height: 1.125rem;
-        border-radius: 50%;
-        border: 2px solid;
-        flex-shrink: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 150ms;
-        cursor: pointer;
-    }
-
-    .task-toggle-done {
-        background: #0ea5e9;
-        border-color: #0ea5e9;
-    }
-
-    .task-toggle-todo {
-        border-color: #d4d4d4;
-    }
-
-    .task-toggle-todo:hover {
-        border-color: #0ea5e9;
-    }
-
-    .dark .task-toggle-todo {
-        border-color: #404040;
-    }
-
-    /* Upcoming date pill */
-    .date-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.125rem 0.5rem;
-        background: #f0f9ff;
-        color: #0284c7;
-        border-radius: 0.375rem;
-        font-size: 0.625rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-    }
-
-    .dark .date-pill {
-        background: rgba(2, 132, 199, 0.12);
-        color: #38bdf8;
-    }
+  .date-pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.125rem 0.5rem; background: #f0f9ff; color: #0284c7; border-radius: 0.375rem; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.02em; }
+  .dark .date-pill { background: rgba(2,132,199,0.12); color: #38bdf8; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="space-y-6">
 
-    <!-- ── Actions ────────────────────────────────────────────── -->
-    <div class="flex flex-wrap items-center gap-3">
-        <a href="{% url 'event_create' %}" class="btn btn-primary">
-            <i data-lucide="calendar-plus" class="w-4 h-4"></i>
-            Nouvel événement
-        </a>
-        <a href="{% url 'task_create' %}" class="btn btn-secondary">
-            <i data-lucide="check-square" class="w-4 h-4 text-sky-500"></i>
-            Nouvelle tâche
-        </a>
+  <!-- ── Actions ──────────────────────────────────────────────── -->
+  <div class="flex flex-wrap items-center gap-3">
+    <a href="{% url 'event_create' %}" class="btn btn-primary">
+      <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+      Nouvel événement
+    </a>
+    <a href="{% url 'task_create' %}" class="btn btn-secondary">
+      <i data-lucide="check-square" class="w-4 h-4 text-sky-500"></i>
+      Nouvelle tâche
+    </a>
+  </div>
+
+  <!-- ── Main layout ───────────────────────────────────────────── -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+
+    <!-- Calendrier -->
+    <div class="xl:col-span-2 card overflow-hidden">
+      <div id="calendar" class="p-5"></div>
     </div>
 
-    <!-- ── Main layout ────────────────────────────────────────── -->
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+    <!-- Sidebar -->
+    <div class="space-y-5">
 
-        <!-- ── Calendrier ──────────────────────────────────────── -->
-        <div class="xl:col-span-2 card overflow-hidden">
-            <div id="calendar" class="p-5"></div>
+      <!-- Tâches du jour -->
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+          <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2" style="font-family:'Sora',system-ui,sans-serif;">
+            <i data-lucide="list-todo" class="w-4 h-4 text-sky-500"></i>
+            Aujourd'hui
+          </h2>
+          <span class="badge bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400 text-[10px]">
+            {{ tasks_today|length }} tâche{% if tasks_today|length > 1 %}s{% endif %}
+          </span>
         </div>
 
-        <!-- ── Sidebar ─────────────────────────────────────────── -->
-        <div class="space-y-5">
-
-            <!-- Tâches du jour -->
-            <div class="card overflow-hidden">
-                <div
-                    class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
-                    <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2"
-                        style="font-family:'Sora',system-ui,sans-serif;">
-                        <i data-lucide="list-todo" class="w-4 h-4 text-sky-500"></i>
-                        Aujourd'hui
-                    </h2>
-                    <span class="badge bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400 text-[10px]">
-                        {{ tasks_today|length }} tâche{% if tasks_today|length > 1 %}s{% endif %}
-                    </span>
-                </div>
-
-                {% for task in tasks_today %}
-                <div class="task-item group">
-                    <div class="flex items-center gap-3">
-                        <button onclick="toggleTask({{ task.id }})"
-                            class="task-toggle {% if task.is_completed %}task-toggle-done{% else %}task-toggle-todo{% endif %}">
-                            {% if task.is_completed %}
-                            <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
-                            {% endif %}
-                        </button>
-                        <span class="text-sm font-medium flex-1 min-w-0 truncate
-                                     {% if task.is_completed %}line-through text-neutral-300 dark:text-neutral-600
-                                     {% else %}text-neutral-800 dark:text-neutral-200{% endif %}">
-                            {{ task.title }}
-                        </span>
-                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <a href="{% url 'task_edit' task.id %}"
-                                class="p-1.5 rounded-lg text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20"
-                                title="Modifier">
-                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                            </a>
-                            <a href="{% url 'task_delete' task.id %}"
-                                class="p-1.5 rounded-lg text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                title="Supprimer">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </a>
-                        </div>
-                    </div>
-                    {% if task.due_date or task.priority != 'LOW' %}
-                    <div class="mt-2 flex items-center gap-2 pl-[1.625rem]">
-                        {% if task.start_time %}
-                        <span class="flex items-center gap-1 text-[10px] text-neutral-400 font-medium">
-                            <i data-lucide="clock" class="w-3 h-3"></i>
-                            {{ task.start_time|date:"H:i" }} {% if task.end_time %}- {{ task.end_time|date:"H:i" }}{%
-                            endif %}
-                        </span>
-                        {% elif task.due_date %}
-                        <span class="flex items-center gap-1 text-[10px] text-neutral-400 font-medium">
-                            <i data-lucide="calendar" class="w-3 h-3"></i>
-                            {{ task.due_date|date:"H:i" }}
-                        </span>
-                        {% endif %}
-                        {% if task.priority != 'LOW' %}
-                        <span class="badge text-[9px]
-                            {% if task.priority == 'HIGH' %}bg-red-50 text-red-500 dark:bg-red-900/20
-                            {% else %}bg-amber-50 text-amber-500 dark:bg-amber-900/20{% endif %}">
-                            {{ task.get_priority_display }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                </div>
-                {% empty %}
-                <div class="px-5 py-10 text-center">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mx-auto mb-2">
-                        <i data-lucide="sun" class="w-4 h-4 text-sky-400"></i>
-                    </div>
-                    <p class="text-xs text-neutral-400">Journée libre !</p>
-                </div>
-                {% endfor %}
+        {% for task in tasks_today %}
+        <div class="task-item group">
+          <div class="flex items-center gap-3">
+            <button onclick="toggleTask({{ task.id }})" class="task-toggle {% if task.is_completed %}task-toggle-done{% else %}task-toggle-todo{% endif %}">
+              {% if task.is_completed %}<i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>{% endif %}
+            </button>
+            <span class="text-sm font-medium flex-1 min-w-0 truncate {% if task.is_completed %}line-through text-neutral-300 dark:text-neutral-600{% else %}text-neutral-800 dark:text-neutral-200{% endif %}">
+              {{ task.title }}
+            </span>
+            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+              <a href="{% url 'task_edit' task.id %}" class="p-1.5 rounded-lg text-neutral-300 hover:text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-900/20" title="Modifier">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </a>
+              <a href="{% url 'task_delete' task.id %}" class="p-1.5 rounded-lg text-neutral-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" title="Supprimer">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </a>
             </div>
-
-            <!-- Prochainement -->
-            <div class="card overflow-hidden">
-                <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
-                    <h2 class="text-sm font-semibold text-neutral-500 dark:text-neutral-400 flex items-center gap-2"
-                        style="font-family:'Sora',system-ui,sans-serif;">
-                        <i data-lucide="calendar-days" class="w-4 h-4"></i>
-                        Prochainement
-                    </h2>
-                </div>
-
-                {% for task in tasks_upcoming %}
-                <div class="task-item group">
-                    <div class="flex items-center justify-between gap-3">
-                        <p class="text-xs font-semibold text-neutral-800 dark:text-neutral-200 truncate flex-1">{{
-                            task.title }}</p>
-                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <a href="{% url 'task_edit' task.id %}"
-                                class="p-1 rounded-md text-neutral-300 hover:text-sky-500" title="Modifier">
-                                <i data-lucide="edit-3" class="w-3 h-3"></i>
-                            </a>
-                            <a href="{% url 'task_delete' task.id %}"
-                                class="p-1 rounded-md text-neutral-300 hover:text-red-500" title="Supprimer">
-                                <i data-lucide="trash-2" class="w-3 h-3"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="mt-1.5">
-                        <span class="date-pill">
-                            <i data-lucide="calendar" class="w-2.5 h-2.5"></i>
-                            {{ task.due_date|date:"d M, H:i" }}
-                        </span>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="px-5 py-8 text-center">
-                    <p class="text-xs text-neutral-400 italic">Rien à l'horizon.</p>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- Mini stat du jour -->
-            {% if tasks_today %}
-            <div class="card p-4">
-                <p class="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-3">Progression du jour
-                </p>
-                {% with total=tasks_today|length %}
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs text-neutral-600 dark:text-neutral-400">
-                        {{ tasks_completed_today }} / {{ total }} terminée{% if tasks_completed_today > 1 %}s{% endif %}
-                    </span>
-                    <span class="text-xs font-bold text-sky-500">
-                        {% if total > 0 %}{% widthratio tasks_completed_today total 100 %}%{% else %}0%{% endif %}
-                    </span>
-                </div>
-                <div class="h-1.5 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden">
-                    {% if total > 0 %}
-                    <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all"
-                        style="width: {% widthratio tasks_completed_today total 100 %}%"></div>
-                    {% endif %}
-                </div>
-                {% endwith %}
-            </div>
+          </div>
+          {% if task.due_date or task.priority != 'LOW' %}
+          <div class="mt-2 flex items-center gap-2 pl-[1.625rem]">
+            {% if task.start_time %}
+            <span class="flex items-center gap-1 text-[10px] text-neutral-400 font-medium">
+              <i data-lucide="clock" class="w-3 h-3"></i>
+              {{ task.start_time|date:"H:i" }}{% if task.end_time %} - {{ task.end_time|date:"H:i" }}{% endif %}
+            </span>
+            {% elif task.due_date %}
+            <span class="flex items-center gap-1 text-[10px] text-neutral-400 font-medium">
+              <i data-lucide="calendar" class="w-3 h-3"></i>
+              {{ task.due_date|date:"H:i" }}
+            </span>
             {% endif %}
-
+            {% if task.priority != 'LOW' %}
+            <span class="badge text-[9px] {% if task.priority == 'HIGH' %}bg-red-50 text-red-500 dark:bg-red-900/20{% else %}bg-amber-50 text-amber-500 dark:bg-amber-900/20{% endif %}">
+              {{ task.get_priority_display }}
+            </span>
+            {% endif %}
+          </div>
+          {% endif %}
         </div>
+        {% empty %}
+        <div class="px-5 py-10 text-center">
+          <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="sun" class="w-4 h-4 text-sky-400"></i>
+          </div>
+          <p class="text-xs text-neutral-400">Journée libre !</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Prochainement -->
+      <div class="card overflow-hidden">
+        <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+          <h2 class="text-sm font-semibold text-neutral-500 dark:text-neutral-400 flex items-center gap-2" style="font-family:'Sora',system-ui,sans-serif;">
+            <i data-lucide="calendar-days" class="w-4 h-4"></i>
+            Prochainement
+          </h2>
+        </div>
+
+        {% for task in tasks_upcoming %}
+        <div class="task-item group">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-xs font-semibold text-neutral-800 dark:text-neutral-200 truncate flex-1">{{ task.title }}</p>
+            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+              <a href="{% url 'task_edit' task.id %}" class="p-1 rounded-md text-neutral-300 hover:text-sky-500" title="Modifier">
+                <i data-lucide="edit-3" class="w-3 h-3"></i>
+              </a>
+              <a href="{% url 'task_delete' task.id %}" class="p-1 rounded-md text-neutral-300 hover:text-red-500" title="Supprimer">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </a>
+            </div>
+          </div>
+          <div class="mt-1.5">
+            <span class="date-pill">
+              <i data-lucide="calendar" class="w-2.5 h-2.5"></i>
+              {{ task.due_date|date:"d M, H:i" }}
+            </span>
+          </div>
+        </div>
+        {% empty %}
+        <div class="px-5 py-8 text-center">
+          <p class="text-xs text-neutral-400 italic">Rien à l'horizon.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Mini stat du jour -->
+      {% if tasks_today %}
+      <div class="card p-4">
+        <p class="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-3">Progression du jour</p>
+        {% with total=tasks_today|length %}
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-neutral-600 dark:text-neutral-400">
+            {{ tasks_completed_today }} / {{ total }} terminée{% if tasks_completed_today > 1 %}s{% endif %}
+          </span>
+          <span class="text-xs font-bold text-sky-500">
+            {% if total > 0 %}{% widthratio tasks_completed_today total 100 %}%{% else %}0%{% endif %}
+          </span>
+        </div>
+        <div class="h-1.5 bg-neutral-100 dark:bg-neutral-700 rounded-full overflow-hidden">
+          {% if total > 0 %}
+          <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all" style="width: {% widthratio tasks_completed_today total 100 %}%"></div>
+          {% endif %}
+        </div>
+        {% endwith %}
+      </div>
+      {% endif %}
+
     </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        const isDark = document.documentElement.classList.contains('dark');
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const isDark = document.documentElement.classList.contains('dark');
 
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'fr',
-            firstDay: 1,
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek'
-            },
-            buttonText: {
-                today: "Aujourd'hui",
-                month: "Mois",
-                week: "Semaine"
-            },
-            events: '{% url "calendar_events_api" %}',
-            eventClick: info => {
-                window.location.href = `/planning/events/${info.event.id}/edit/`;
-            },
-            height: 'auto',
-            dayMaxEvents: 3,
-            moreLinkContent: (args) => '+' + args.num + ' autres',
-            themeSystem: 'standard',
-            dayCellClassNames: 'fc-day-custom',
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView:  'dayGridMonth',
+      locale:       'fr',
+      firstDay:     1,
+      headerToolbar: {
+        left:   'prev,next today',
+        center: 'title',
+        right:  'dayGridMonth,timeGridWeek',
+      },
+      buttonText: {
+        today: "Aujourd'hui",
+        month: "Mois",
+        week:  "Semaine",
+      },
+      events:      '{% url "calendar_events_api" %}',
+      eventClick:  info => { window.location.href = `/planning/events/${info.event.id}/edit/`; },
+      height:      'auto',
+      dayMaxEvents: 3,
+      moreLinkContent: args => '+' + args.num + ' autres',
+      themeSystem: 'standard',
 
-            // Style events on render
-            eventDidMount: function (info) {
-                const color = info.event.backgroundColor;
-                if (color) {
-                    info.el.style.backgroundColor = color;
-                    info.el.style.borderColor = 'transparent';
-                }
-                info.el.style.borderRadius = '4px';
-            },
+      eventDidMount: function (info) {
+        const color = info.event.backgroundColor;
+        if (color) {
+          info.el.style.backgroundColor = color;
+          info.el.style.borderColor = 'transparent';
+        }
+        info.el.style.borderRadius = '4px';
+      },
 
-            // Subtle hover on day cells
-            dayCellDidMount: function (info) {
-                info.el.style.transition = 'background 120ms';
-            }
-        });
-
-        calendar.render();
-
-        // Re-render icons after calendar init
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+      dayCellDidMount: function (info) {
+        info.el.style.transition = 'background 120ms';
+      },
     });
 
-    function toggleTask(id) {
-        fetch(`/planning/tasks/${id}/toggle/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        }).then(() => window.location.reload());
-    }
+    calendar.render();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+
+  function toggleTask(id) {
+    fetch(`/planning/tasks/${id}/toggle/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    }).then(() => window.location.reload());
+  }
 </script>
 {% endblock %}
