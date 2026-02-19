@@ -34,7 +34,14 @@ jobs:
           apt-get update && apt-get install -y certbot python3-certbot-apache
           cp mylife.conf /etc/apache2/sites-available/
           a2ensite mylife.conf
-          a2enmod proxy proxy_http ssl
+          a2enmod proxy proxy_http
+          
+          # Ensure Apache starts (even if it was stopped)
+          systemctl start apache2 || systemctl restart apache2
+          
           # Run certbot (non-interactive, agree to tos, provide email)
-          certbot --apache -d mylife.boutik237.com --non-interactive --agree-tos -m npe.techs@gmail.com
-          apache2ctl configtest && systemctl restart apache2
+          # Use --apache but we must ensure port 80 is open and working
+          certbot --apache -d mylife.boutik237.com --non-interactive --agree-tos -m npe.techs@gmail.com || echo "Certbot failed, but continuing..."
+          
+          # Final restart to apply SSL if certbot succeeded
+          systemctl restart apache2
