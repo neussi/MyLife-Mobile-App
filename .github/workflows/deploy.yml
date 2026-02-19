@@ -32,16 +32,18 @@ jobs:
           
           # Apache Reverse Proxy & SSL Setup
           apt-get update && apt-get install -y certbot python3-certbot-apache
+          
+          # Enable necessary modules
+          a2enmod proxy proxy_http ssl headers
+          
+          # Force sync configuration
           cp mylife.conf /etc/apache2/sites-available/
           a2ensite mylife.conf
-          a2enmod proxy proxy_http
+          # Remove Certbot's auto-generated file if it conflicts with our manual one
+          rm -f /etc/apache2/sites-enabled/mylife-le-ssl.conf
           
-          # Ensure Apache starts (even if it was stopped)
-          systemctl start apache2 || systemctl restart apache2
+          # Run certbot to ensure certificate exists (it will skip if already there)
+          certbot certonly --apache -d mylife.boutik237.com --non-interactive --agree-tos -m npe.techs@gmail.com || true
           
-          # Run certbot (non-interactive, agree to tos, provide email)
-          # Use --apache but we must ensure port 80 is open and working
-          certbot --apache -d mylife.boutik237.com --non-interactive --agree-tos -m npe.techs@gmail.com || echo "Certbot failed, but continuing..."
-          
-          # Final restart to apply SSL if certbot succeeded
-          systemctl restart apache2
+          # Final check and restart
+          apache2ctl configtest && systemctl restart apache2
