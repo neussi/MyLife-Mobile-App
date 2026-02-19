@@ -29,3 +29,9 @@ jobs:
           docker-compose down
           docker-compose up -d --build
           docker image prune -f
+          
+          # Apache Reverse Proxy Setup
+          cp mylife.conf /etc/apache2/sites-available/
+          a2ensite mylife.conf
+          a2enmod proxy proxy_http
+          apache2ctl configtest && systemctl restart apache2

@@ -8,7 +8,7 @@ port ssh : 22
 
 utilisateur : root
 
-mot de passe : propental2025
+mot de passe : propenta2025
 
 docker , docker-compose sont deja installés sur le serveur.
 
