@@ -16,6 +16,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-n4yvdw!6^_c*t5_7&c4m*
 DEBUG = os.environ.get('DEBUG', '1') == '1'
 
 ALLOWED_HOSTS = ['mylife.boutik237.com', '167.86.88.92', 'localhost', '127.0.0.1']
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
 
 
 # Application definition
@@ -52,7 +54,12 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_SSL_REDIRECT = True # We are enforcing HTTPS now
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    CSRF_TRUSTED_ORIGINS = ['https://mylife.boutik237.com', 'http://167.86.88.92:54321']
+    CSRF_TRUSTED_ORIGINS = [
+        'https://mylife.boutik237.com',
+        'http://mylife.boutik237.com',
+        'http://167.86.88.92:54321',
+        'http://167.86.88.92'
+    ]
     X_FRAME_OPTIONS = 'DENY'
 else:
     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
