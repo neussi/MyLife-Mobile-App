@@ -18,8 +18,9 @@ def get_advisor_insight(request):
         
     AdvisorInteraction.objects.create(
         user=request.user,
-        user_message="Checking status...",
-        advisor_response=str(reports),
+        message_content=request.GET.get('user_message', "Checking status..."),
+        message_type="SYSTEM_CHECK",
+        is_email=False,
         mood_at_time=mood
     )
     

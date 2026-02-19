@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from .models import Contact
 from .forms import ContactForm
 
@@ -67,3 +69,39 @@ def contact_delete(request, pk):
         'type': 'contact',
         'cancel_url': reverse('contact_list')
     })
+
+
+@login_required
+def contact_import(request):
+    if request.method == 'POST':
+        import json
+        try:
+            data = json.loads(request.body)
+            contacts_data = data.get('contacts', [])
+            count = 0
+            
+            for item in contacts_data:
+                # Basic validation
+                name = item.get('name', [])
+                tels = item.get('tel', [])
+                
+                # Navigator.contacts returns arrays for properties
+                first_name = name[0] if name else "Inconnu"
+                phone_number = tels[0] if tels else None
+                
+                if phone_number:
+                    # Check for duplicates
+                    if not Contact.objects.filter(user=request.user, phone_number=phone_number).exists():
+                        Contact.objects.create(
+                            user=request.user,
+                            first_name=first_name,
+                            phone_number=phone_number,
+                            relationship_type='OTHER'
+                        )
+                        count += 1
+            
+            return JsonResponse({'status': 'success', 'count': count})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)

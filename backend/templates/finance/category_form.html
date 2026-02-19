@@ -6,84 +6,73 @@
 {% block content %}
 <div class="max-w-2xl mx-auto">
 
-    <!-- Header -->
-    <div class="mb-8">
-        <nav class="flex items-center gap-2 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
-            <a href="{% url 'finance_dashboard' %}" class="hover:text-emerald-500 transition-colors">Finance</a>
-            <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-neutral-900 dark:text-white">Catégories</span>
-        </nav>
-        <h1 class="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight"
-            style="font-family:'Sora',sans-serif;">
-            {% if form.instance.pk %}Modifier la catégorie{% else %}Nouvelle Catégorie{% endif %}
-        </h1>
-    </div>
+  <!-- Header -->
+  <div class="mb-8">
+    <nav class="flex items-center gap-2 text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+      <a href="{% url 'finance_dashboard' %}" class="hover:text-emerald-500 transition-colors">Finance</a>
+      <i data-lucide="chevron-right" class="w-3 h-3"></i>
+      <span class="text-neutral-900 dark:text-white">Catégories</span>
+    </nav>
+    <h1 class="text-3xl font-bold text-neutral-900 dark:text-white tracking-tight" style="font-family:'Sora',sans-serif;">
+      {% if form.instance.pk %}Modifier la catégorie{% else %}Nouvelle Catégorie{% endif %}
+    </h1>
+  </div>
 
-    <div class="card overflow-hidden relative">
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+  <div class="card overflow-hidden relative">
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
 
-        <form method="post" class="p-8 space-y-8">
-            {% csrf_token %}
+    <form method="post" class="p-8 space-y-8">
+      {% csrf_token %}
 
-            <div class="space-y-6">
-                <!-- Name -->
-                <div class="space-y-2">
-                    <label class="label">Nom de la catégorie</label>
-                    <div class="relative">
-                        <i data-lucide="type"
-                            class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
-                        {{ form.name }}
-                    </div>
-                </div>
+      <div class="space-y-6">
 
-                <!-- Color -->
-                <div class="space-y-2">
-                    <label class="label">Couleur d'identification</label>
-                    <div class="flex items-center gap-4">
-                        <div class="flex-1">
-                            {{ form.color }}
-                        </div>
-                        <div
-                            class="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400">
-                            <i data-lucide="palette" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </div>
+        <!-- Nom -->
+        <div class="space-y-2">
+          <label class="label">Nom de la catégorie</label>
+          <div class="relative">
+            <i data-lucide="type" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+            {{ form.name }}
+          </div>
+        </div>
 
-                <!-- Icon -->
-                <div class="space-y-2">
-                    <label class="label">Icône (Nom Lucide)</label>
-                    <div class="relative">
-                        <i data-lucide="image"
-                            class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
-                        {{ form.icon }}
-                    </div>
-                    <p class="text-[10px] text-neutral-400">Ex: wallet, shopping-cart, home, coffee...</p>
-                </div>
+        <!-- Couleur -->
+        <div class="space-y-2">
+          <label class="label">Couleur d'identification</label>
+          <div class="flex items-center gap-4">
+            <div class="flex-1">{{ form.color }}</div>
+            <div class="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400">
+              <i data-lucide="palette" class="w-5 h-5"></i>
             </div>
+          </div>
+        </div>
 
-            <!-- Actions -->
-            <div class="pt-8 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-end gap-3">
-                <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary px-6">Annuler</a>
-                <button type="submit"
-                    class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 px-8 shadow-lg shadow-emerald-500/20">
-                    Enregistrer la catégorie
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- Icône -->
+        <div class="space-y-2">
+          <label class="label">Icône (Nom Lucide)</label>
+          <div class="relative">
+            <i data-lucide="image" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+            {{ form.icon }}
+          </div>
+          <p class="text-[10px] text-neutral-400">Ex: wallet, shopping-cart, home, coffee...</p>
+        </div>
+
+      </div>
+
+      <!-- Actions -->
+      <div class="pt-8 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-end gap-3">
+        <a href="{% url 'finance_dashboard' %}" class="btn btn-secondary px-6">Annuler</a>
+        <button type="submit" class="btn btn-primary bg-emerald-600 border-emerald-600 hover:bg-emerald-700 px-8 shadow-lg shadow-emerald-500/20">
+          Enregistrer la catégorie
+        </button>
+      </div>
+
+    </form>
+  </div>
+
 </div>
 
 <style>
-    /* Premium overrides */
-    input[type="text"] {
-        padding-left: 3rem !important;
-    }
-
-    input[type="color"] {
-        height: 48px !important;
-        padding: 4px !important;
-        cursor: pointer !important;
-    }
+  input[type="text"]  { padding-left: 3rem !important; }
+  input[type="color"] { height: 48px !important; padding: 4px !important; cursor: pointer !important; }
 </style>
 {% endblock %}
