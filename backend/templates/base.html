@@ -758,8 +758,7 @@
               style="transform-origin: top right; z-index: 60;">
 
               <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-700">
-                <p class="text-xs font-semibold text-neutral-900 dark:text-white">{{
-                  user.get_full_name|default:user.username }}</p>
+                <p class="text-xs font-semibold text-neutral-900 dark:text-white">{{ user.get_full_name|default:user.username }}</p>
                 <p class="text-[11px] text-neutral-400 truncate mt-0.5">{{ user.email }}</p>
               </div>
 
