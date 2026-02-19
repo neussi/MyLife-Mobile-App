@@ -20,6 +20,7 @@ urlpatterns = [
     path('projects/', include('projects.urls')),
     path('lifestyle/', include('lifestyle.urls')),
     path('notifications/', include('notifications.urls')),
+    path('assistant/', include('assistant.urls')),
 ]
 
 handler404 = 'core.views.error_404'

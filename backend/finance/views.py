@@ -128,6 +128,20 @@ def category_create(request):
 
 
 @login_required
+def category_edit(request, pk):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Catégorie modifiée.")
+            return redirect('category_list')
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'finance/category_form.html', {'form': form, 'title': 'Modifier la catégorie'})
+
+
+@login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':

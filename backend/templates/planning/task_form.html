@@ -57,7 +57,26 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
-                                <label class="label">Date d'échéance</label>
+                                <label class="label">Date de début</label>
+                                <div class="relative">
+                                    <i data-lucide="clock"
+                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                                    {{ form.start_time }}
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="label">Date de fin</label>
+                                <div class="relative">
+                                    <i data-lucide="clock"
+                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
+                                    {{ form.end_time }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="label">Date d'échéance (Deadline)</label>
                                 <div class="relative">
                                     <i data-lucide="calendar"
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none"></i>
