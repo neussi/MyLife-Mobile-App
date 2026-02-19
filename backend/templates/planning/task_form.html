@@ -120,33 +120,30 @@
 </div>
 
 <style>
-    input[type="text"],
-    input[type="datetime-local"],
-    input[type="number"],
-    select {
-        @apply field !important;
-        padding-left: 2.75rem !important;
-    }
-
-    input[name="title"],
-    textarea {
-        padding-left: 1.125rem !important;
+    /* Premium overrides for icons and specifics */
+    input[type="datetime-local"] {
+        padding-left: 3rem !important;
     }
 
     textarea {
-        @apply field min-h-[140px] leading-relaxed !important;
+        min-height: 140px !important;
+        line-height: 1.6 !important;
     }
 
     input[type="number"] {
-        @apply font-bold !important;
+        font-weight: 700 !important;
     }
 
     input[type="checkbox"] {
-        @apply w-7 h-7 rounded-xl border-neutral-300 text-sky-600 focus:ring-sky-500/20 transition-all !important;
+        width: 28px !important;
+        height: 28px !important;
+        cursor: pointer !important;
     }
 
     select {
-        @apply appearance-none cursor-pointer;
+        appearance: none !important;
+        cursor: pointer !important;
+        padding-left: 3rem !important;
     }
 </style>
 {% endblock %}

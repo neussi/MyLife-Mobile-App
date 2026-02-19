@@ -146,27 +146,25 @@
 </div>
 
 <style>
-    input[type="text"],
-    input[type="date"],
-    select {
-        @apply field !important;
-        padding-left: 2.75rem !important;
-    }
-
+    /* Final fixes for transaction specifics */
     input[name="amount"] {
-        @apply field !important;
-        padding-left: 4.5rem !important;
+        padding-left: 5rem !important;
         font-size: 1.25rem !important;
         font-weight: 800 !important;
-        letter-spacing: -0.01em !important;
+    }
+
+    input[type="date"],
+    select {
+        padding-left: 3rem !important;
     }
 
     textarea {
-        @apply field min-h-[140px] leading-relaxed !important;
+        min-height: 140px !important;
     }
 
     select {
-        @apply appearance-none cursor-pointer;
+        appearance: none !important;
+        cursor: pointer !important;
     }
 </style>
 {% endblock %}

@@ -116,32 +116,26 @@
 </div>
 
 <style>
-    input[type="text"],
+    /* Premium overrides */
     input[type="date"],
     select {
-        @apply field !important;
-        padding-left: 2.75rem !important;
-    }
-
-    input[name="name"],
-    textarea {
-        padding-left: 1.125rem !important;
+        padding-left: 3rem !important;
     }
 
     textarea {
-        @apply field min-h-[160px] leading-relaxed !important;
+        min-height: 160px !important;
+        line-height: 1.6 !important;
     }
 
     input[type="color"] {
-        @apply w-full h-10 p-1 rounded-lg cursor-pointer border-1.5 border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 transition-all !important;
+        height: 48px !important;
+        padding: 4px !important;
+        cursor: pointer !important;
     }
 
     input[type="number"] {
-        @apply w-full font-bold !important;
-    }
-
-    select {
-        @apply appearance-none cursor-pointer;
+        text-align: center !important;
+        font-weight: 700 !important;
     }
 </style>
 {% endblock %}

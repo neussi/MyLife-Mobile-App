@@ -7,148 +7,136 @@
 {% block content %}
 <div class="max-w-4xl space-y-8" x-data="profileHandler()">
 
-    <!-- ── Header Profil ─────────────────────────────────────── -->
-    <div class="card p-8 flex flex-col md:flex-row items-center gap-8 border-surface-200/60 dark:border-surface-800/60">
-        <div class="relative group">
-            <template x-if="avatarPreview">
-                <img :src="avatarPreview"
-                    class="w-32 h-32 rounded-3xl object-cover ring-4 ring-surface-50 dark:ring-surface-800 shadow-xl">
-            </template>
-            <template x-if="!avatarPreview">
-                <div
-                    class="w-32 h-32 rounded-3xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-4xl ring-4 ring-brand-500/10">
-                    {{ user.username|first|upper }}
-                </div>
-            </template>
+  <!-- ── Header Profil ──────────────────────────────────────────── -->
+  <div class="card p-8 flex flex-col md:flex-row items-center gap-8">
 
-            <label
-                class="absolute -bottom-2 -right-2 p-2.5 bg-brand-600 text-white rounded-xl shadow-lg cursor-pointer hover:bg-brand-700 transition-all hover:scale-110 active:scale-95">
-                <i data-lucide="camera" class="w-4 h-4"></i>
-                <input type="file" @change="previewAvatar($event)" class="hidden" id="id_avatar" name="avatar"
-                    form="profileForm">
-            </label>
+    <div class="relative group">
+      <template x-if="avatarPreview">
+        <img :src="avatarPreview" class="w-32 h-32 rounded-3xl object-cover ring-4 ring-surface-50 dark:ring-surface-800 shadow-xl">
+      </template>
+      <template x-if="!avatarPreview">
+        <div class="w-32 h-32 rounded-3xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-4xl ring-4 ring-brand-500/10">
+          {{ user.username|first|upper }}
         </div>
-
-        <div class="flex-1 text-center md:text-left">
-            <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
-                <h2 class="text-2xl font-bold text-surface-900 dark:text-white">{{
-                    user.get_full_name|default:user.username }}</h2>
-                <span
-                    class="badge bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 self-center">Membre
-                    actif</span>
-            </div>
-            <p
-                class="text-surface-500 dark:text-surface-400 text-sm flex items-center justify-center md:justify-start gap-2">
-                <i data-lucide="mail" class="w-3.5 h-3.5"></i>
-                {{ user.email }}
-            </p>
-            <p class="text-[11px] text-surface-400 mt-3 uppercase tracking-widest font-bold">Inscrit le {{
-                user.date_joined|date:"d F Y" }}</p>
-        </div>
+      </template>
+      <label class="absolute -bottom-2 -right-2 p-2.5 bg-brand-600 text-white rounded-xl shadow-lg cursor-pointer hover:bg-brand-700 transition-all hover:scale-110 active:scale-95">
+        <i data-lucide="camera" class="w-4 h-4"></i>
+        <input type="file" @change="previewAvatar($event)" class="hidden" id="id_avatar" name="avatar" form="profileForm">
+      </label>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <!-- ── Formulaire Informations ─────────────────────────── -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="card p-6 border-surface-200/60 dark:border-surface-800/60">
-                <h3 class="text-sm font-bold text-surface-900 dark:text-white mb-6 flex items-center gap-2">
-                    <i data-lucide="user-edit" class="w-4 h-4 text-brand-500"></i>
-                    Informations Personnelles
-                </h3>
-
-                <form method="post" id="profileForm" enctype="multipart/form-data" class="space-y-5">
-                    {% csrf_token %}
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="label">Prénom</label>
-                            <input type="text" name="first_name" value="{{ user.first_name }}" class="field">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="label">Nom</label>
-                            <input type="text" name="last_name" value="{{ user.last_name }}" class="field">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="label">Email</label>
-                        <input type="email" name="email" value="{{ user.email }}" class="field">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="label">Bio</label>
-                        <textarea name="bio" rows="4" class="field resize-none"
-                            placeholder="Parlez-nous de vous...">{{ user.bio|default:'' }}</textarea>
-                    </div>
-
-                    <div class="flex justify-end pt-4">
-                        <button type="submit" class="btn-primary">Enregistrer les modifications</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ── Sidebar Sécurité & Zone de Danger ────────────────── -->
-        <div class="space-y-6">
-
-            <!-- Sécurité -->
-            <div class="card p-6 border-surface-200/60 dark:border-surface-800/60">
-                <h3 class="text-sm font-bold text-surface-900 dark:text-white mb-4 flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
-                    Sécurité
-                </h3>
-                <p class="text-xs text-surface-500 mb-6 leading-relaxed">Maintenez votre compte sécurisé en changeant
-                    régulièrement votre mot de passe.</p>
-                <a href="{% url 'password_change' %}" class="btn-secondary w-full justify-center">Changer le mot de
-                    passe</a>
-            </div>
-
-            <!-- Danger Zone -->
-            <div class="card p-6 border-red-100 dark:border-red-900/30 bg-red-50/20 dark:bg-red-950/20">
-                <h3 class="text-sm font-bold text-red-600 dark:text-red-400 mb-4 flex items-center gap-2">
-                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                    Zone de Danger
-                </h3>
-                <p class="text-xs text-red-600/70 dark:text-red-400/70 mb-6 leading-relaxed">La suppression de votre
-                    compte est irréversible et effacera toutes vos données.</p>
-
-                <form method="post" action="{% url 'delete_account' %}"
-                    onsubmit="return confirm('Êtes-vous sûr ? Cette action est définitive.')">
-                    {% csrf_token %}
-                    <button type="submit"
-                        class="text-xs font-bold text-red-600 hover:text-red-700 hover:underline block w-full text-center">Supprimer
-                        mon compte</button>
-                </form>
-
-                <div class="h-px bg-red-100 dark:bg-red-900/30 my-6"></div>
-
-                <a href="{% url 'logout' %}" class="btn-danger w-full justify-center">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    Déconnexion
-                </a>
-            </div>
-
-        </div>
+    <div class="flex-1 text-center md:text-left">
+      <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+        <h2 class="text-2xl font-bold text-surface-900 dark:text-white">{{ user.get_full_name|default:user.username }}</h2>
+        <span class="badge bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 self-center">Membre actif</span>
+      </div>
+      <p class="text-surface-500 dark:text-surface-400 text-sm flex items-center justify-center md:justify-start gap-2">
+        <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+        {{ user.email }}
+      </p>
+      <p class="text-[11px] text-surface-400 mt-3 uppercase tracking-widest font-bold">
+        Inscrit le {{ user.date_joined|date:"d F Y" }}
+      </p>
     </div>
+
+  </div>
+
+  <!-- ── Grille Formulaire + Sidebar ───────────────────────────── -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Formulaire Informations -->
+    <div class="lg:col-span-2 space-y-6">
+      <div class="card p-6">
+        <h3 class="text-sm font-bold text-surface-900 dark:text-white mb-6 flex items-center gap-2">
+          <i data-lucide="user-edit" class="w-4 h-4 text-brand-500"></i>
+          Informations Personnelles
+        </h3>
+
+        <form method="post" id="profileForm" enctype="multipart/form-data" class="space-y-5">
+          {% csrf_token %}
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label class="label">Prénom</label>
+              <input type="text" name="first_name" value="{{ user.first_name }}">
+            </div>
+            <div class="space-y-1.5">
+              <label class="label">Nom</label>
+              <input type="text" name="last_name" value="{{ user.last_name }}">
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="label">Email</label>
+            <input type="email" name="email" value="{{ user.email }}">
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="label">Bio</label>
+            <textarea name="bio" rows="4" class="resize-none" placeholder="Parlez-nous de vous...">{{ user.bio|default:'' }}</textarea>
+          </div>
+
+          <div class="flex justify-end pt-4">
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sidebar Sécurité & Déconnexion -->
+    <div class="space-y-6">
+
+      <!-- Sécurité -->
+      <div class="card p-6">
+        <h3 class="text-sm font-bold text-surface-900 dark:text-white mb-4 flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+          Sécurité
+        </h3>
+        <p class="text-xs text-surface-500 mb-6 leading-relaxed">
+          Maintenez votre compte sécurisé en changeant régulièrement votre mot de passe.
+        </p>
+        <a href="{% url 'password_change' %}" class="btn btn-secondary w-full justify-center">
+          Changer le mot de passe
+        </a>
+      </div>
+
+      <!-- Déconnexion -->
+      <div class="card p-6 border-red-100 dark:border-red-900/30 bg-red-50/20 dark:bg-red-950/20">
+        <h3 class="text-sm font-bold text-red-600 dark:text-red-400 mb-4 flex items-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          Session
+        </h3>
+        <p class="text-xs text-red-600/70 dark:text-red-400/70 mb-6 leading-relaxed">
+          Vous serez redirigé vers la page de connexion.
+        </p>
+        <a href="{% url 'logout' %}" class="btn btn-danger w-full justify-center">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          Déconnexion
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    function profileHandler() {
-        return {
-            avatarPreview: '{% if user.avatar %}{{ user.avatar.url }}{% else %}{% endif %}',
-            previewAvatar(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    this.avatarPreview = ev.target.result;
-                    this.$nextTick(() => lucide.createIcons());
-                }
-                reader.readAsDataURL(file);
-            }
-        }
+  function profileHandler() {
+    return {
+      avatarPreview: '{% if user.avatar %}{{ user.avatar.url }}{% else %}{% endif %}',
+      previewAvatar(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          this.avatarPreview = ev.target.result;
+          this.$nextTick(() => lucide.createIcons());
+        };
+        reader.readAsDataURL(file);
+      },
     }
+  }
 </script>
 {% endblock %}

@@ -127,34 +127,33 @@
 </div>
 
 <style>
-    input[type="text"],
+    /* Premium overrides for icons and specifics */
     input[type="datetime-local"],
-    input[type="number"],
-    select {
-        @apply field !important;
-        padding-left: 2.75rem !important;
-    }
-
-    input[name="title"],
-    textarea {
-        padding-left: 1.125rem !important;
+    input[type="text"][name="location"] {
+        padding-left: 3rem !important;
     }
 
     textarea {
-        @apply field min-h-[140px] leading-relaxed !important;
-    }
-
-    input[type="color"] {
-        @apply w-full h-12 p-1 rounded-xl cursor-pointer border-1.5 border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 transition-all !important;
+        min-height: 140px !important;
+        line-height: 1.6 !important;
     }
 
     input[type="number"] {
-        @apply w-full text-center font-bold !important;
-        padding-left: 1.125rem !important;
+        width: 100px !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+    }
+
+    input[type="color"] {
+        height: 48px !important;
+        padding: 4px !important;
+        cursor: pointer !important;
     }
 
     input[type="checkbox"] {
-        @apply w-6 h-6 rounded-lg border-neutral-300 text-violet-600 focus:ring-violet-500/20 transition-all !important;
+        width: 22px !important;
+        height: 22px !important;
+        cursor: pointer !important;
     }
 </style>
 {% endblock %}

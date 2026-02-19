@@ -7,95 +7,86 @@
 {% block content %}
 <div class="max-w-2xl space-y-8">
 
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
 
-        <!-- Emails Section -->
-        <div class="card overflow-hidden">
-            <div
-                class="px-6 py-4 border-b border-surface-100 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-800/30 flex items-center gap-2">
-                <i data-lucide="mail" class="w-4 h-4 text-brand-500"></i>
-                <h2 class="text-sm font-bold">Notifications par Email</h2>
-            </div>
+    <!-- Emails Section -->
+    <div class="card overflow-hidden">
+      <div class="px-6 py-4 border-b border-surface-100 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-800/30 flex items-center gap-2">
+        <i data-lucide="mail" class="w-4 h-4 text-brand-500"></i>
+        <h2 class="text-sm font-bold">Notifications par Email</h2>
+      </div>
 
-            <div class="divide-y divide-surface-100 dark:divide-surface-800">
-                <div class="px-6 py-5 flex items-center justify-between group">
-                    <div>
-                        <p class="text-sm font-semibold text-surface-900 dark:text-white">Rappels de tâches</p>
-                        <p class="text-xs text-surface-500 mt-1">Soyez averti lorsqu'une tâche approche de son terme.
-                        </p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="email_tasks" class="sr-only peer" {% if settings.email_tasks
-                            %}checked{% endif %}>
-                        <div
-                            class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600">
-                        </div>
-                    </label>
-                </div>
+      <div class="divide-y divide-surface-100 dark:divide-surface-800">
 
-                <div class="px-6 py-5 flex items-center justify-between group">
-                    <div>
-                        <p class="text-sm font-semibold text-surface-900 dark:text-white">Rappels d'événements</p>
-                        <p class="text-xs text-surface-500 mt-1">Recevez une alerte pour vos rendez-vous importants.</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="email_events" class="sr-only peer" {% if settings.email_events
-                            %}checked{% endif %}>
-                        <div
-                            class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600">
-                        </div>
-                    </label>
-                </div>
-
-                <div class="px-6 py-5 flex items-center justify-between group">
-                    <div>
-                        <p class="text-sm font-semibold text-surface-900 dark:text-white">Bilan journalier</p>
-                        <p class="text-xs text-surface-500 mt-1">Un résumé quotidien de vos activités chaque matin.</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="email_daily_digest" class="sr-only peer" {% if
-                            settings.email_daily_digest %}checked{% endif %}>
-                        <div
-                            class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600">
-                        </div>
-                    </label>
-                </div>
-            </div>
+        <!-- Rappels de tâches -->
+        <div class="px-6 py-5 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-surface-900 dark:text-white">Rappels de tâches</p>
+            <p class="text-xs text-surface-500 mt-1">Soyez averti lorsqu'une tâche approche de son terme.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="email_tasks" class="sr-only peer" {% if settings.email_tasks %}checked{% endif %}>
+            <div class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+          </label>
         </div>
 
-        <!-- In-App Section -->
-        <div class="card overflow-hidden">
-            <div
-                class="px-6 py-4 border-b border-surface-100 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-800/30 flex items-center gap-2">
-                <i data-lucide="bell" class="w-4 h-4 text-brand-500"></i>
-                <h2 class="text-sm font-bold">Notifications dans l'Application</h2>
-            </div>
-
-            <div class="divide-y divide-surface-100 dark:divide-surface-800">
-                <div class="px-6 py-5 flex items-center justify-between group">
-                    <div>
-                        <p class="text-sm font-semibold text-surface-900 dark:text-white">Alertes en temps réel</p>
-                        <p class="text-xs text-surface-500 mt-1">Afficher des pastilles de notification instantanément.
-                        </p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="inapp_tasks" class="sr-only peer" {% if settings.inapp_tasks
-                            %}checked{% endif %}>
-                        <div
-                            class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600">
-                        </div>
-                    </label>
-                </div>
-            </div>
+        <!-- Rappels d'événements -->
+        <div class="px-6 py-5 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-surface-900 dark:text-white">Rappels d'événements</p>
+            <p class="text-xs text-surface-500 mt-1">Recevez une alerte pour vos rendez-vous importants.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="email_events" class="sr-only peer" {% if settings.email_events %}checked{% endif %}>
+            <div class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+          </label>
         </div>
 
-        <div class="flex justify-end">
-            <button type="submit" class="btn-primary">
-                Enregistrer les préférences
-            </button>
+        <!-- Bilan journalier -->
+        <div class="px-6 py-5 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-surface-900 dark:text-white">Bilan journalier</p>
+            <p class="text-xs text-surface-500 mt-1">Un résumé quotidien de vos activités chaque matin.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="email_daily_digest" class="sr-only peer" {% if settings.email_daily_digest %}checked{% endif %}>
+            <div class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+          </label>
         </div>
-    </form>
+
+      </div>
+    </div>
+
+    <!-- In-App Section -->
+    <div class="card overflow-hidden">
+      <div class="px-6 py-4 border-b border-surface-100 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-800/30 flex items-center gap-2">
+        <i data-lucide="bell" class="w-4 h-4 text-brand-500"></i>
+        <h2 class="text-sm font-bold">Notifications dans l'Application</h2>
+      </div>
+
+      <div class="divide-y divide-surface-100 dark:divide-surface-800">
+
+        <!-- Alertes en temps réel -->
+        <div class="px-6 py-5 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold text-surface-900 dark:text-white">Alertes en temps réel</p>
+            <p class="text-xs text-surface-500 mt-1">Afficher des pastilles de notification instantanément.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="inapp_tasks" class="sr-only peer" {% if settings.inapp_tasks %}checked{% endif %}>
+            <div class="w-11 h-6 bg-surface-200 dark:bg-surface-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <button type="submit" class="btn btn-primary">Enregistrer les préférences</button>
+    </div>
+
+  </form>
 
 </div>
 {% endblock %}

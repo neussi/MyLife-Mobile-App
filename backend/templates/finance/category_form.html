@@ -75,14 +75,15 @@
 </div>
 
 <style>
-    input[type="text"],
-    select {
-        @apply field !important;
-        padding-left: 2.75rem !important;
+    /* Premium overrides */
+    input[type="text"] {
+        padding-left: 3rem !important;
     }
 
     input[type="color"] {
-        @apply w-full h-12 p-1 rounded-xl cursor-pointer border-1.5 border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 transition-all !important;
+        height: 48px !important;
+        padding: 4px !important;
+        cursor: pointer !important;
     }
 </style>
 {% endblock %}

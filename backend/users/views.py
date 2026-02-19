@@ -97,3 +97,18 @@ def profile_view(request):
                     messages.error(request, error.as_text())
         return redirect('profile')
     return render(request, 'users/profile.html', {'user': request.user})
+@login_required
+def password_change_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "votre mot de passe a été modifié avec succès !")
+            return redirect('profile')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error.as_text())
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'auth/password_change.html', {'form': form})
